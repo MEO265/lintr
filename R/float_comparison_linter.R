@@ -58,7 +58,7 @@ float_comparison_linter <- function() {
     and expr[2][{numeric_literal}]
   ")
 
-  non_integer_expr <- glue::glue("
+  base_non_integer_expr <- glue::glue("
     {non_integer_const}
     or (
       OP-MINUS
@@ -72,6 +72,18 @@ float_comparison_linter <- function() {
       OP-MINUS
       and count(expr) = 1
       and expr[{non_integer_division}]
+    )
+  ")
+
+  non_integer_c_call <- glue::glue("
+    expr[1][SYMBOL_FUNCTION_CALL[text() = 'c']]
+    and expr[{base_non_integer_expr}]
+  ")
+
+  non_integer_expr <- glue::glue("
+    {base_non_integer_expr}
+    or (
+      {non_integer_c_call}
     )
   ")
 

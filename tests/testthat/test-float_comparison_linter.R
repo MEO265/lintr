@@ -8,6 +8,7 @@ test_that("floating point comparisons are linted", {
   expect_lint("y == -1/10", lint_msg, linters = linter)
   expect_lint("y == 1e-3", lint_msg, linters = linter)
   expect_lint("x == 3", lint_msg, linters = linter)
+  expect_lint("x == c(1, y, Z)", lint_msg, linters = linter)
 })
 
 test_that("integer comparisons are not linted", {
