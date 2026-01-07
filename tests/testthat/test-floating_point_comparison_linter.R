@@ -22,9 +22,25 @@ test_that("integer comparisons are not linted", {
 test_that("lint metadata points to the comparison expression", {
   linter <- floating_point_comparison_linter()
   lint_msg <- "Avoid equality comparisons with non-integer numerics"
+
   expect_lint(
-    c("x <- 1", "x == 3"),
-    list(message = lint_msg, line_number = 2L, column_number = 1L),
+    "x == 3",
+    list(message = lint_msg, line_number = 1L, column_number = 1L),
+    linters = linter
+  )
+  expect_lint(
+    "3 == x",
+    list(message = lint_msg, line_number = 1L, column_number = 1L),
+    linters = linter
+  )
+  expect_lint(
+    "x == 1/10",
+    list(message = lint_msg, line_number = 1L, column_number = 1L),
+    linters = linter
+  )
+  expect_lint(
+    "1/10 == x",
+    list(message = lint_msg, line_number = 1L, column_number = 1L),
     linters = linter
   )
 })
