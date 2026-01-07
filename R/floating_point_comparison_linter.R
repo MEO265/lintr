@@ -35,11 +35,11 @@ floating_point_comparison_linter <- function() { # nolint: object_length_linter.
     NUM_CONST[
       not(starts-with(text(), 'NA'))
       and not(substring(text(), string-length(text())) = 'L')
-      and (
-        contains(text(), '.')
-        or contains(translate(text(), 'E', 'e'), 'e')
-      )
     ]
+  "
+
+  integer_division <- "
+    SPECIAL[text() = '%/%']
   "
 
   numeric_literal <- "
@@ -79,6 +79,7 @@ floating_point_comparison_linter <- function() { # nolint: object_length_linter.
   //EQ
     /parent::expr[
       expr[{non_integer_expr}]
+      and not(expr[{integer_division}])
     ]
   ")
 

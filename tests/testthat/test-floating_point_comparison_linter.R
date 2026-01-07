@@ -13,6 +13,7 @@ test_that("floating point comparisons are linted", {
   expect_lints("y == 1/10")
   expect_lints("y == -1/10")
   expect_lints("y == 1e-3")
+  expect_lints("x == 3")
 })
 
 test_that("integer comparisons are not linted", {
@@ -23,8 +24,8 @@ test_that("integer comparisons are not linted", {
     testthat::expect_length(lints, 0L)
   }
 
-  expect_no_lints("x == 3")
   expect_no_lints("x == 3L")
   expect_no_lints("x == -3L")
   expect_no_lints("x == 1e3L")
+  expect_no_lints("x == 10%/%2")
 })
