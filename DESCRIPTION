@@ -145,6 +145,7 @@ Collate:
     'namespace_linter.R'
     'nested_ifelse_linter.R'
     'nested_pipe_linter.R'
+    'non_integer_comparison_linter.R'
     'nonportable_path_linter.R'
     'shared_constants.R'
     'nrow_subset_linter.R'

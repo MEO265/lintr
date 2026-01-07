@@ -17,11 +17,11 @@ see also \code{\link[=available_tags]{available_tags()}}.
 \section{Tags}{
 The following tags exist:
 \itemize{
-\item{\link[=best_practices_linters]{best_practices} (65 linters)}
+\item{\link[=best_practices_linters]{best_practices} (66 linters)}
 \item{\link[=common_mistakes_linters]{common_mistakes} (13 linters)}
 \item{\link[=configurable_linters]{configurable} (44 linters)}
 \item{\link[=consistency_linters]{consistency} (33 linters)}
-\item{\link[=correctness_linters]{correctness} (7 linters)}
+\item{\link[=correctness_linters]{correctness} (8 linters)}
 \item{\link[=default_linters]{default} (26 linters)}
 \item{\link[=efficiency_linters]{efficiency} (30 linters)}
 \item{\link[=executing_linters]{executing} (6 linters)}
@@ -99,6 +99,7 @@ The following linters exist:
 \item{\code{\link{namespace_linter}} (tags: configurable, correctness, executing, robustness)}
 \item{\code{\link{nested_ifelse_linter}} (tags: efficiency, readability)}
 \item{\code{\link{nested_pipe_linter}} (tags: configurable, consistency, readability)}
+\item{\code{\link{non_integer_comparison_linter}} (tags: best_practices, correctness)}
 \item{\code{\link{nonportable_path_linter}} (tags: best_practices, configurable, robustness)}
 \item{\code{\link{nrow_subset_linter}} (tags: best_practices, consistency, efficiency)}
 \item{\code{\link{numeric_leading_zero_linter}} (tags: consistency, readability, style)}

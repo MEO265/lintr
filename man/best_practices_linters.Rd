@@ -48,6 +48,7 @@ The following linters are tagged with 'best_practices':
 \item{\code{\link{library_call_linter}}}
 \item{\code{\link{list_comparison_linter}}}
 \item{\code{\link{literal_coercion_linter}}}
+\item{\code{\link{non_integer_comparison_linter}}}
 \item{\code{\link{nonportable_path_linter}}}
 \item{\code{\link{nrow_subset_linter}}}
 \item{\code{\link{nzchar_linter}}}

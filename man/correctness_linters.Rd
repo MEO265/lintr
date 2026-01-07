@@ -16,6 +16,7 @@ The following linters are tagged with 'correctness':
 \item{\code{\link{equals_na_linter}}}
 \item{\code{\link{missing_argument_linter}}}
 \item{\code{\link{namespace_linter}}}
+\item{\code{\link{non_integer_comparison_linter}}}
 \item{\code{\link{object_usage_linter}}}
 \item{\code{\link{package_hooks_linter}}}
 \item{\code{\link{sprintf_linter}}}
