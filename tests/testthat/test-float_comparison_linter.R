@@ -9,6 +9,7 @@ test_that("floating point comparisons are linted", {
   expect_lint("y == 1e-3", lint_msg, linters = linter)
   expect_lint("x == 3", lint_msg, linters = linter)
   expect_lint("x == c(1, y, Z)", lint_msg, linters = linter)
+  expect_lint("c(1, y, Z) == x", lint_msg, linters = linter)
 })
 
 test_that("integer comparisons are not linted", {
@@ -18,6 +19,8 @@ test_that("integer comparisons are not linted", {
   expect_no_lint("x == -3L", linters = linter)
   expect_no_lint("x == 1e3L", linters = linter)
   expect_no_lint("x == 10%/%2", linters = linter)
+  expect_no_lint("x == c(1L, y, Z)", linters = linter)
+  expect_no_lint("c(1L, y, Z) == x", linters = linter)
 })
 
 test_that("lint metadata points to the comparison expression", {
