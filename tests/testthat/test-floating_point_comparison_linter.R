@@ -29,3 +29,12 @@ test_that("integer comparisons are not linted", {
   expect_no_lints("x == 1e3L")
   expect_no_lints("x == 10%/%2")
 })
+
+test_that("lint metadata points to the comparison expression", {
+  linter <- floating_point_comparison_linter()
+  lints <- lint(text = c("x <- 1", "x == 3"), linters = linter)
+
+  testthat::expect_length(lints, 1L)
+  testthat::expect_identical(lints[[1L]]$line_number, 2L)
+  testthat::expect_identical(lints[[1L]]$column_number, 1L)
+})
