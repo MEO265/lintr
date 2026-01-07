@@ -17,7 +17,7 @@ see also \code{\link[=available_tags]{available_tags()}}.
 \section{Tags}{
 The following tags exist:
 \itemize{
-\item{\link[=best_practices_linters]{best_practices} (64 linters)}
+\item{\link[=best_practices_linters]{best_practices} (65 linters)}
 \item{\link[=common_mistakes_linters]{common_mistakes} (10 linters)}
 \item{\link[=configurable_linters]{configurable} (42 linters)}
 \item{\link[=consistency_linters]{consistency} (32 linters)}
@@ -30,7 +30,7 @@ The following tags exist:
 \item{\link[=pkg_testthat_linters]{pkg_testthat} (12 linters)}
 \item{\link[=readability_linters]{readability} (65 linters)}
 \item{\link[=regex_linters]{regex} (4 linters)}
-\item{\link[=robustness_linters]{robustness} (17 linters)}
+\item{\link[=robustness_linters]{robustness} (18 linters)}
 \item{\link[=style_linters]{style} (41 linters)}
 \item{\link[=tidy_design_linters]{tidy_design} (1 linters)}
 }
@@ -70,6 +70,7 @@ The following linters exist:
 \item{\code{\link{expect_type_linter}} (tags: best_practices, package_development, pkg_testthat)}
 \item{\code{\link{extraction_operator_linter}} (tags: best_practices, style)}
 \item{\code{\link{fixed_regex_linter}} (tags: best_practices, configurable, efficiency, readability, regex)}
+\item{\code{\link{floating_point_comparison_linter}} (tags: best_practices, robustness)}
 \item{\code{\link{for_loop_index_linter}} (tags: best_practices, readability, robustness)}
 \item{\code{\link{function_argument_linter}} (tags: best_practices, consistency, style)}
 \item{\code{\link{function_left_parentheses_linter}} (tags: default, readability, style)}
