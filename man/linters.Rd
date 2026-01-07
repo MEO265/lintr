@@ -71,7 +71,7 @@ The following linters exist:
 \item{\code{\link{expect_true_false_linter}} (tags: best_practices, package_development, pkg_testthat, readability)}
 \item{\code{\link{expect_type_linter}} (tags: best_practices, package_development, pkg_testthat)}
 \item{\code{\link{fixed_regex_linter}} (tags: best_practices, configurable, efficiency, readability, regex)}
-\item{\code{\link{floating_point_comparison_linter}} (tags: best_practices, correctness)}
+\item{\code{\link{float_comparison_linter}} (tags: best_practices, correctness)}
 \item{\code{\link{for_loop_index_linter}} (tags: best_practices, readability, robustness)}
 \item{\code{\link{function_argument_linter}} (tags: best_practices, consistency, style)}
 \item{\code{\link{function_left_parentheses_linter}} (tags: default, readability, style)}

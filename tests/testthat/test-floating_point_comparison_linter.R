@@ -1,5 +1,5 @@
 test_that("floating point comparisons are linted", {
-  linter <- floating_point_comparison_linter()
+  linter <- float_comparison_linter()
   lint_msg <- "Avoid equality comparisons with non-integer numerics"
 
   expect_lint("x == 3.0", lint_msg, linters = linter)
@@ -11,7 +11,7 @@ test_that("floating point comparisons are linted", {
 })
 
 test_that("integer comparisons are not linted", {
-  linter <- floating_point_comparison_linter()
+  linter <- float_comparison_linter()
 
   expect_no_lint("x == 3L", linters = linter)
   expect_no_lint("x == -3L", linters = linter)
@@ -20,7 +20,7 @@ test_that("integer comparisons are not linted", {
 })
 
 test_that("lint metadata points to the comparison expression", {
-  linter <- floating_point_comparison_linter()
+  linter <- float_comparison_linter()
   lint_msg <- "Avoid equality comparisons with non-integer numerics"
 
   expect_lint(

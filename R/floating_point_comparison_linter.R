@@ -8,29 +8,29 @@
 #' # will produce lints
 #' lint(
 #'   text = "x == 3.0",
-#'   linters = floating_point_comparison_linter()
+#'   linters = float_comparison_linter()
 #' )
 #'
 #' lint(
 #'   text = "y == 1/10",
-#'   linters = floating_point_comparison_linter()
+#'   linters = float_comparison_linter()
 #' )
 #'
 #' lint(
 #'   text = "3.0 == x",
-#'   linters = floating_point_comparison_linter()
+#'   linters = float_comparison_linter()
 #' )
 #'
 #' # okay
 #' lint(
 #'   text = "x == 3L",
-#'   linters = floating_point_comparison_linter()
+#'   linters = float_comparison_linter()
 #' )
 #'
-#' @evalRd rd_tags("floating_point_comparison_linter")
+#' @evalRd rd_tags("float_comparison_linter")
 #' @seealso [linters] for a complete list of linters available in lintr.
 #' @export
-floating_point_comparison_linter <- function() { # nolint: object_length_linter.
+float_comparison_linter <- function() {
   non_integer_const <- "
     NUM_CONST[
       not(starts-with(text(), 'NA'))
