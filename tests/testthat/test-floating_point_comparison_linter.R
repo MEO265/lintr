@@ -1,5 +1,5 @@
-test_that("non-integer numeric comparisons are linted", {
-  linter <- non_integer_comparison_linter()
+test_that("floating point comparisons are linted", {
+  linter <- floating_point_comparison_linter()
   lint_msg <- "Avoid equality comparisons with non-integer numerics"
 
   expect_lints <- function(text) {
@@ -16,7 +16,7 @@ test_that("non-integer numeric comparisons are linted", {
 })
 
 test_that("integer comparisons are not linted", {
-  linter <- non_integer_comparison_linter()
+  linter <- floating_point_comparison_linter()
 
   expect_no_lints <- function(text) {
     lints <- lint(text = text, linters = linter)

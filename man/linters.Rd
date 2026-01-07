@@ -71,6 +71,7 @@ The following linters exist:
 \item{\code{\link{expect_true_false_linter}} (tags: best_practices, package_development, pkg_testthat, readability)}
 \item{\code{\link{expect_type_linter}} (tags: best_practices, package_development, pkg_testthat)}
 \item{\code{\link{fixed_regex_linter}} (tags: best_practices, configurable, efficiency, readability, regex)}
+\item{\code{\link{floating_point_comparison_linter}} (tags: best_practices, correctness)}
 \item{\code{\link{for_loop_index_linter}} (tags: best_practices, readability, robustness)}
 \item{\code{\link{function_argument_linter}} (tags: best_practices, consistency, style)}
 \item{\code{\link{function_left_parentheses_linter}} (tags: default, readability, style)}
@@ -99,7 +100,6 @@ The following linters exist:
 \item{\code{\link{namespace_linter}} (tags: configurable, correctness, executing, robustness)}
 \item{\code{\link{nested_ifelse_linter}} (tags: efficiency, readability)}
 \item{\code{\link{nested_pipe_linter}} (tags: configurable, consistency, readability)}
-\item{\code{\link{non_integer_comparison_linter}} (tags: best_practices, correctness)}
 \item{\code{\link{nonportable_path_linter}} (tags: best_practices, configurable, robustness)}
 \item{\code{\link{nrow_subset_linter}} (tags: best_practices, consistency, efficiency)}
 \item{\code{\link{numeric_leading_zero_linter}} (tags: consistency, readability, style)}

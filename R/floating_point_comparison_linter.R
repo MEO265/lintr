@@ -1,4 +1,4 @@
-#' Non-integer numeric comparison linter
+#' Floating point comparison linter
 #'
 #' Comparing floating-point values for equality is fragile and can be affected
 #'   by rounding error. Prefer checking whether the absolute difference is within
@@ -8,29 +8,29 @@
 #' # will produce lints
 #' lint(
 #'   text = "x == 3.0",
-#'   linters = non_integer_comparison_linter()
+#'   linters = floating_point_comparison_linter()
 #' )
 #'
 #' lint(
 #'   text = "y == 1/10",
-#'   linters = non_integer_comparison_linter()
+#'   linters = floating_point_comparison_linter()
 #' )
 #'
 #' lint(
 #'   text = "3.0 == x",
-#'   linters = non_integer_comparison_linter()
+#'   linters = floating_point_comparison_linter()
 #' )
 #'
 #' # okay
 #' lint(
 #'   text = "x == 3L",
-#'   linters = non_integer_comparison_linter()
+#'   linters = floating_point_comparison_linter()
 #' )
 #'
-#' @evalRd rd_tags("non_integer_comparison_linter")
+#' @evalRd rd_tags("floating_point_comparison_linter")
 #' @seealso [linters] for a complete list of linters available in lintr.
 #' @export
-non_integer_comparison_linter <- function() {
+floating_point_comparison_linter <- function() { # nolint: object_length_linter.
   non_integer_const <- "
     NUM_CONST[
       not(starts-with(text(), 'NA'))
