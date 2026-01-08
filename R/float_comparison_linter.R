@@ -29,12 +29,12 @@
 #'
 #' @evalRd rd_tags("float_comparison_linter")
 #' @seealso [linters] for a complete list of linters available in lintr.
-#' @param lint_integer_literals Logical, default `TRUE`. When `FALSE`, only
+#' @param lint_implicit_integer Logical, default `TRUE`. When `FALSE`, only
 #'   non-integer numeric literals with a decimal point or exponent (e.g. `4.2`
 #'   or `1e-3`) are linted; plain integer literals like `4` are ignored.
 #' @export
-float_comparison_linter <- function(lint_integer_literals = TRUE) {
-  integer_literal_filter <- if (lint_integer_literals) {
+float_comparison_linter <- function(lint_implicit_integer = TRUE) {
+  integer_literal_filter <- if (lint_implicit_integer) {
     ""
   } else {
     "
