@@ -124,6 +124,7 @@ Collate:
     'is_lint_level.R'
     'is_numeric_linter.R'
     'keyword_quote_linter.R'
+    'leap_year_linter.R'
     'length_levels_linter.R'
     'length_test_linter.R'
     'lengths_linter.R'
