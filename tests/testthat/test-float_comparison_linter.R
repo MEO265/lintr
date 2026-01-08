@@ -52,22 +52,22 @@ test_that("lint metadata points to the comparison expression", {
 
   expect_lint(
     "x == 3",
-    list(message = lint_msg, line_number = 1L, column_number = 1L),
+    list(message = lint_msg, line_number = 1L, column_number = 3L),
     linters = linter
   )
   expect_lint(
     "3 == x",
-    list(message = lint_msg, line_number = 1L, column_number = 1L),
+    list(message = lint_msg, line_number = 1L, column_number = 3L),
     linters = linter
   )
   expect_lint(
     "x == 1/10",
-    list(message = lint_msg, line_number = 1L, column_number = 1L),
+    list(message = lint_msg, line_number = 1L, column_number = 3L),
     linters = linter
   )
   expect_lint(
     "1/10 == x",
-    list(message = lint_msg, line_number = 1L, column_number = 1L),
+    list(message = lint_msg, line_number = 1L, column_number = 6L),
     linters = linter
   )
 })
