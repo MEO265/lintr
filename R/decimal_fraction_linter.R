@@ -1,4 +1,4 @@
-#' Leap year integer linter
+#' Decimal fraction integer linter
 #'
 #' Check for use of `as.integer(x * <float>)` and suggest an integer arithmetic
 #' equivalent like `as.integer((x * 1461L)%/%4L)`.
@@ -7,29 +7,29 @@
 #' # will produce a lint
 #' lint(
 #'   text = "as.integer(x * 365.25)",
-#'   linters = leap_year_linter()
+#'   linters = decimal_fraction_linter()
 #' )
 #'
 #' lint(
 #'   text = "as.integer(365.25 * x)",
-#'   linters = leap_year_linter()
+#'   linters = decimal_fraction_linter()
 #' )
 #'
 #' lint(
 #'   text = "as.integer(x * 0.1)",
-#'   linters = leap_year_linter()
+#'   linters = decimal_fraction_linter()
 #' )
 #'
 #' # okay
 #' lint(
 #'   text = "as.integer(x * 365)",
-#'   linters = leap_year_linter()
+#'   linters = decimal_fraction_linter()
 #' )
 #'
-#' @evalRd rd_tags("leap_year_linter")
+#' @evalRd rd_tags("decimal_fraction_linter")
 #' @seealso [linters] for a complete list of linters available in lintr.
 #' @export
-leap_year_linter <- function() {
+decimal_fraction_linter <- function() {
   Linter(linter_level = "expression", function(source_expression) {
     xml_calls <- source_expression$xml_find_function_calls("as.integer")
     if (length(xml_calls) == 0L) {

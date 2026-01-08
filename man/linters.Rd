@@ -56,6 +56,7 @@ The following linters exist:
 \item{\code{\link{consecutive_assertion_linter}} (tags: consistency, readability, style)}
 \item{\code{\link{consecutive_mutate_linter}} (tags: configurable, consistency, efficiency, readability)}
 \item{\code{\link{cyclocomp_linter}} (tags: best_practices, configurable, readability, style)}
+\item{\code{\link{decimal_fraction_linter}} (tags: best_practices, efficiency, robustness)}
 \item{\code{\link{download_file_linter}} (tags: best_practices, common_mistakes, robustness)}
 \item{\code{\link{duplicate_argument_linter}} (tags: common_mistakes, configurable, correctness)}
 \item{\code{\link{empty_assignment_linter}} (tags: best_practices, readability)}
@@ -85,7 +86,6 @@ The following linters exist:
 \item{\code{\link{inner_combine_linter}} (tags: consistency, efficiency, readability)}
 \item{\code{\link{is_numeric_linter}} (tags: best_practices, consistency, readability)}
 \item{\code{\link{keyword_quote_linter}} (tags: consistency, readability, style)}
-\item{\code{\link{leap_year_linter}} (tags: best_practices, efficiency, robustness)}
 \item{\code{\link{length_levels_linter}} (tags: best_practices, consistency, readability)}
 \item{\code{\link{length_test_linter}} (tags: common_mistakes, efficiency)}
 \item{\code{\link{lengths_linter}} (tags: best_practices, efficiency, readability)}

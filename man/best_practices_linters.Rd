@@ -23,6 +23,7 @@ The following linters are tagged with 'best_practices':
 \item{\code{\link{condition_message_linter}}}
 \item{\code{\link{conjunct_test_linter}}}
 \item{\code{\link{cyclocomp_linter}}}
+\item{\code{\link{decimal_fraction_linter}}}
 \item{\code{\link{download_file_linter}}}
 \item{\code{\link{empty_assignment_linter}}}
 \item{\code{\link{expect_comparison_linter}}}
@@ -43,7 +44,6 @@ The following linters are tagged with 'best_practices':
 \item{\code{\link{implicit_assignment_linter}}}
 \item{\code{\link{implicit_integer_linter}}}
 \item{\code{\link{is_numeric_linter}}}
-\item{\code{\link{leap_year_linter}}}
 \item{\code{\link{length_levels_linter}}}
 \item{\code{\link{lengths_linter}}}
 \item{\code{\link{library_call_linter}}}
