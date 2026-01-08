@@ -29,17 +29,37 @@
 #'
 #' @evalRd rd_tags("float_comparison_linter")
 #' @seealso [linters] for a complete list of linters available in lintr.
+#' @param lint_integer Logical, default \code{TRUE}. When \code{FALSE}, only
+#'   non-integer numeric literals with a decimal point or exponent (e.g. \code{4.2}
+#'   or \code{1e-3}) are linted; plain integer literals like \code{4} are ignored.
 #' @export
-float_comparison_linter <- function() {
-  non_integer_const <- "
-    NUM_CONST[
-      not(starts-with(text(), 'NA'))
-      and not(text() = 'TRUE')
-      and not(text() = 'FALSE')
-      and not(text() = 'Inf')
-      and not(substring(text(), string-length(text())) = 'L')
-    ]
-  "
+float_comparison_linter <- function(lint_integer = TRUE) {
+  non_integer_const <- if (lint_integer) {
+    "
+      NUM_CONST[
+        not(starts-with(text(), 'NA'))
+        and not(text() = 'TRUE')
+        and not(text() = 'FALSE')
+        and not(text() = 'Inf')
+        and not(substring(text(), string-length(text())) = 'L')
+      ]
+    "
+  } else {
+    "
+      NUM_CONST[
+        not(starts-with(text(), 'NA'))
+        and not(text() = 'TRUE')
+        and not(text() = 'FALSE')
+        and not(text() = 'Inf')
+        and not(substring(text(), string-length(text())) = 'L')
+        and (
+          contains(text(), '.')
+          or contains(text(), 'e')
+          or contains(text(), 'E')
+        )
+      ]
+    "
+  }
 
   integer_division <- "
     SPECIAL[text() = '%/%']

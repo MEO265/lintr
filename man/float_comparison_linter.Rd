@@ -4,7 +4,12 @@
 \alias{float_comparison_linter}
 \title{Floating point comparison linter}
 \usage{
-float_comparison_linter()
+float_comparison_linter(lint_integer = TRUE)
+}
+\arguments{
+\item{lint_integer}{Logical, default \code{TRUE}. When \code{FALSE}, only
+non-integer numeric literals with a decimal point or exponent (e.g. \code{4.2}
+or \code{1e-3}) are linted; plain integer literals like \code{4} are ignored.}
 }
 \description{
 Comparing floating-point values for equality is fragile and can be affected
@@ -39,5 +44,5 @@ lint(
 \link{linters} for a complete list of linters available in lintr.
 }
 \section{Tags}{
-\link[=best_practices_linters]{best_practices}, \link[=correctness_linters]{correctness}
+\link[=best_practices_linters]{best_practices}, \link[=configurable_linters]{configurable}, \link[=correctness_linters]{correctness}
 }

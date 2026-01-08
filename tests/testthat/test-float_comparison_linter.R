@@ -36,6 +36,16 @@ test_that("integer comparisons are not linted", {
   expect_no_lint("match(TRUE, x)", linters = linter)
 })
 
+test_that("integer literals can be ignored when configured", {
+  linter <- float_comparison_linter(lint_integer = FALSE)
+  lint_msg <- "Avoid equality comparisons with non-integer numerics"
+
+  expect_no_lint("x == 3", linters = linter)
+  expect_no_lint("x == c(1, y, Z)", linters = linter)
+  expect_lint("x == 3.0", lint_msg, linters = linter)
+  expect_lint("x == 1e-3", lint_msg, linters = linter)
+})
+
 test_that("lint metadata points to the comparison expression", {
   linter <- float_comparison_linter()
   lint_msg <- "Avoid equality comparisons with non-integer numerics"
