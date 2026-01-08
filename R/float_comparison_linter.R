@@ -90,24 +90,16 @@ float_comparison_linter <- function() {
     )
   ")
 
-  match_call <- glue::glue("
-    //expr[
-      expr[1][SYMBOL_FUNCTION_CALL[text() = 'match']]
-      and expr[{non_integer_expr}]
-    ]
-  ")
-
-  comparison_operator <- "
-  (//EQ | //SPECIAL[text() = '%in%'])
-  "
-
   xpath <- glue::glue("
-  {comparison_operator}
-    /parent::expr[
-      expr[{non_integer_expr}]
-      and not(expr[{integer_division}])
-    ]
-  | {match_call}
+  (//EQ | //SPECIAL[text() = '%in%'])
+  /parent::expr[
+    expr[{non_integer_expr}]
+    and not(expr[{integer_division}])
+  ]
+  | //expr[
+    expr[1][SYMBOL_FUNCTION_CALL[text() = 'match']]
+    and expr[{non_integer_expr}]
+  ]
   ")
 
   Linter(linter_level = "expression", function(source_expression) {
