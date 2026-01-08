@@ -34,6 +34,8 @@ float_comparison_linter <- function() {
   non_integer_const <- "
     NUM_CONST[
       not(starts-with(text(), 'NA'))
+      and not(text() = 'TRUE')
+      and not(text() = 'FALSE')
       and not(text() = 'Inf')
       and not(substring(text(), string-length(text())) = 'L')
     ]
