@@ -29,6 +29,8 @@ test_that("integer comparisons are not linted", {
   expect_no_lint("c(1L, y, Z) %in% x", linters = linter)
   expect_no_lint("match(x, c(1L, y, Z))", linters = linter)
   expect_no_lint("match(c(1L, y, Z), x)", linters = linter)
+  expect_no_lint("x == Inf", linters = linter)
+  expect_no_lint("x == -Inf", linters = linter)
 })
 
 test_that("lint metadata points to the comparison expression", {
