@@ -30,13 +30,40 @@ test_that("decimal_fraction_linter suggests reduced fractions", {
     rex::rex("as.integer", anything, "1L", anything, "%/%", anything, "8L"),
     linter
   )
-  expect_lint("as.integer(x * 1e-3)", NULL, linter)
+  expect_lint(
+    "as.integer(x * 3.2)",
+    rex::rex("as.integer", anything, "16L", anything, "%/%", anything, "5L"),
+    linter
+  )
+  expect_lint(
+    "as.integer(x * 0.14)",
+    rex::rex("as.integer", anything, "7L", anything, "%/%", anything, "50L"),
+    linter
+  )
+  expect_lint(
+    "as.integer(x * 7.001)",
+    rex::rex("as.integer", anything, "7001L", anything, "%/%", anything, "1000L"),
+    linter
+  )
+  expect_lint(
+    "as.integer(x * 3e-5)",
+    rex::rex("as.integer", anything, "3L", anything, "%/%", anything, "100000L"),
+    linter
+  )
+  expect_lint(
+    "as.integer(x * 1e-3)",
+    rex::rex("as.integer", anything, "1L", anything, "%/%", anything, "1000L"),
+    linter
+  )
 })
 
 test_that("decimal_fraction_linter skips other conversions", {
   linter <- decimal_fraction_linter()
 
   expect_lint("as.integer(x * 365)", NULL, linter)
+  expect_lint("as.integer(x * 3.0)", NULL, linter)
+  expect_lint("as.integer(x * 3)", NULL, linter)
+  expect_lint("as.integer(x * 3L)", NULL, linter)
   expect_lint("as.integer(x * 365.25 + 1)", NULL, linter)
   expect_lint("as.integer(x * 365.0)", NULL, linter)
   expect_lint("as.integer(x * 1e3)", NULL, linter)

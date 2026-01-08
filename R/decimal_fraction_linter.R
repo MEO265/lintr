@@ -44,7 +44,7 @@ decimal_fraction_linter <- function() {
           and expr/NUM_CONST
           and expr/NUM_CONST[
             contains(text(), '.')
-            and not(contains(translate(text(), 'E', 'e'), 'e'))
+            or contains(translate(text(), 'E', 'e'), 'e-')
           ]
         ]
       ]"
@@ -113,20 +113,33 @@ decimal_fraction_linter <- function() {
 }
 
 float_to_fraction <- function(number) {
-  if (!grepl("\\.\\d", number)) {
+  split_exp <- strsplit(number, "[eE]", perl = TRUE)[[1L]]
+  mantissa <- split_exp[[1L]]
+  exponent <- if (length(split_exp) > 1L) as.integer(split_exp[[2L]]) else 0L
+  if (exponent >= 0L && !grepl(".", mantissa, fixed = TRUE)) {
     return(NULL)
   }
-  parts <- strsplit(number, ".", fixed = TRUE)[[1L]]
+
+  parts <- strsplit(mantissa, ".", fixed = TRUE)[[1L]]
   integer_part <- parts[[1L]]
   fractional_part <- if (length(parts) > 1L) parts[[2L]] else ""
   integer_part <- ifelse(nzchar(integer_part), integer_part, "0")
+  if (exponent >= 0L && !grepl("[1-9]", fractional_part)) {
+    return(NULL)
+  }
 
   numerator <- as.integer(paste0(integer_part, fractional_part))
   if (is.na(numerator)) {
     return(NULL)
   }
   denominator <- 10.0^nchar(fractional_part)
+  if (exponent < 0L) {
+    denominator <- denominator * 10.0^abs(exponent)
+  }
+  normalize_fraction(numerator, denominator)
+}
 
+normalize_fraction <- function(numerator, denominator) {
   if (abs(numerator) > .Machine[["integer.max"]] || denominator > .Machine[["integer.max"]]) {
     return(NULL)
   }
