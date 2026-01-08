@@ -4,10 +4,10 @@
 \alias{float_comparison_linter}
 \title{Floating point comparison linter}
 \usage{
-float_comparison_linter(lint_integer = TRUE)
+float_comparison_linter(lint_integer_literals = TRUE)
 }
 \arguments{
-\item{lint_integer}{Logical, default \code{TRUE}. When \code{FALSE}, only
+\item{lint_integer_literals}{Logical, default \code{TRUE}. When \code{FALSE}, only
 non-integer numeric literals with a decimal point or exponent (e.g. \code{4.2}
 or \code{1e-3}) are linted; plain integer literals like \code{4} are ignored.}
 }

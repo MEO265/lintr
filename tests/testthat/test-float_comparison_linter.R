@@ -37,7 +37,7 @@ test_that("integer comparisons are not linted", {
 })
 
 test_that("integer literals can be ignored when configured", {
-  linter <- float_comparison_linter(lint_integer = FALSE)
+  linter <- float_comparison_linter(lint_integer_literals = FALSE)
   lint_msg <- "Avoid equality comparisons with non-integer numerics"
 
   expect_no_lint("x == 3", linters = linter)

@@ -29,37 +29,33 @@
 #'
 #' @evalRd rd_tags("float_comparison_linter")
 #' @seealso [linters] for a complete list of linters available in lintr.
-#' @param lint_integer Logical, default \code{TRUE}. When \code{FALSE}, only
-#'   non-integer numeric literals with a decimal point or exponent (e.g. \code{4.2}
-#'   or \code{1e-3}) are linted; plain integer literals like \code{4} are ignored.
+#' @param lint_integer_literals Logical, default `TRUE`. When `FALSE`, only
+#'   non-integer numeric literals with a decimal point or exponent (e.g. `4.2`
+#'   or `1e-3`) are linted; plain integer literals like `4` are ignored.
 #' @export
-float_comparison_linter <- function(lint_integer = TRUE) {
-  non_integer_const <- if (lint_integer) {
-    "
-      NUM_CONST[
-        not(starts-with(text(), 'NA'))
-        and not(text() = 'TRUE')
-        and not(text() = 'FALSE')
-        and not(text() = 'Inf')
-        and not(substring(text(), string-length(text())) = 'L')
-      ]
-    "
+float_comparison_linter <- function(lint_integer_literals = TRUE) {
+  integer_literal_filter <- if (lint_integer_literals) {
+    ""
   } else {
     "
-      NUM_CONST[
-        not(starts-with(text(), 'NA'))
-        and not(text() = 'TRUE')
-        and not(text() = 'FALSE')
-        and not(text() = 'Inf')
-        and not(substring(text(), string-length(text())) = 'L')
-        and (
-          contains(text(), '.')
-          or contains(text(), 'e')
-          or contains(text(), 'E')
-        )
-      ]
+      and (
+        contains(text(), '.')
+        or contains(text(), 'e')
+        or contains(text(), 'E')
+      )
     "
   }
+
+  non_integer_const <- glue::glue("
+    NUM_CONST[
+      not(starts-with(text(), 'NA'))
+      and not(text() = 'TRUE')
+      and not(text() = 'FALSE')
+      and not(text() = 'Inf')
+      and not(substring(text(), string-length(text())) = 'L')
+      {integer_literal_filter}
+    ]
+  ")
 
   integer_division <- "
     SPECIAL[text() = '%/%']
