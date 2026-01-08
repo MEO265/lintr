@@ -87,8 +87,12 @@ float_comparison_linter <- function() {
     )
   ")
 
+  comparison_operator <- "
+  (//EQ | //SPECIAL[text() = '%in%'])
+  "
+
   xpath <- glue::glue("
-  //EQ
+  {comparison_operator}
     /parent::expr[
       expr[{non_integer_expr}]
       and not(expr[{integer_division}])
