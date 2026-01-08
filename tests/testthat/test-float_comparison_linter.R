@@ -70,4 +70,14 @@ test_that("lint metadata points to the comparison expression", {
     list(message = lint_msg, line_number = 1L, column_number = 6L),
     linters = linter
   )
+  expect_lint(
+    "x %in% c(1, y, Z)",
+    list(message = lint_msg, line_number = 1L, column_number = 3L),
+    linters = linter
+  )
+  expect_lint(
+    "match(x, c(1, y, Z))",
+    list(message = lint_msg, line_number = 1L, column_number = 1L),
+    linters = linter
+  )
 })
