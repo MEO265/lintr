@@ -89,3 +89,18 @@ test_that("decimal_fraction_linter helpers reduce and reject fractions", {
   expect_null(normalize_fraction(1L, 0L))
   expect_identical(int_gcd(18L, 12L), 6L)
 })
+
+test_that("decimal_fraction_linter lint points at number start", {
+  linter <- decimal_fraction_linter()
+
+  expect_lint(
+    "as.integer(x * 0.14)",
+    list(message = rex::rex("7L", anything, "50L"), column_number = 16L),
+    linter
+  )
+  expect_lint(
+    "as.integer(x / 0.13)",
+    list(message = rex::rex("100L", anything, "13L"), column_number = 16L),
+    linter
+  )
+})

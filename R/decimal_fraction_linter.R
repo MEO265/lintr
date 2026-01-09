@@ -128,7 +128,10 @@ decimal_fraction_linter <- function() {
       bad_expr,
       source_expression = source_expression,
       lint_message = lint_message,
-      type = "warning"
+      type = "warning",
+      column_number_xpath = "number(./expr[2]//NUM_CONST/@col1)",
+      range_start_xpath = "number(./expr[2]//NUM_CONST/@col1)",
+      range_end_xpath = "number(./expr[2]//NUM_CONST/@col2)"
     )
   })
 }
