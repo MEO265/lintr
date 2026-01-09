@@ -140,7 +140,7 @@ float_to_fraction <- function(number) {
   split_exp <- strsplit(number, "[eE]", perl = TRUE)[[1L]]
   mantissa <- split_exp[[1L]]
   exponent <- if (length(split_exp) > 1L) as.integer(split_exp[[2L]]) else 0L
-  if (exponent >= 0L && !grepl(".", mantissa, fixed = TRUE)) {
+  if (skip_float_fraction(mantissa, exponent)) {
     return(NULL)
   }
 
@@ -148,9 +148,6 @@ float_to_fraction <- function(number) {
   integer_part <- parts[[1L]]
   fractional_part <- if (length(parts) > 1L) parts[[2L]] else ""
   integer_part <- ifelse(nzchar(integer_part), integer_part, "0")
-  if (exponent >= 0L && !grepl("[1-9]", fractional_part)) {
-    return(NULL)
-  }
 
   numerator <- as.integer(paste0(integer_part, fractional_part))
   if (is.na(numerator)) {
@@ -161,6 +158,19 @@ float_to_fraction <- function(number) {
     denominator <- denominator * 10.0^abs(exponent)
   }
   normalize_fraction(numerator, denominator)
+}
+
+skip_float_fraction <- function(mantissa, exponent) {
+  if (!grepl(".", mantissa, fixed = TRUE)) {
+    return(exponent >= 0L)
+  }
+  if (exponent > 0L) {
+    return(TRUE)
+  }
+  if (exponent >= 0L && !grepl("[1-9]", mantissa)) {
+    return(TRUE)
+  }
+  FALSE
 }
 
 normalize_fraction <- function(numerator, denominator) {
