@@ -20,6 +20,7 @@ test_that("decimal_fraction_linter flags decimal fractions", {
     "as.integer(x * 3.2)" = rex::rex("as.integer", anything, "16L", anything, "%/%", anything, "5L"),
     "as.integer(x * 0.14)" = rex::rex("as.integer", anything, "7L", anything, "%/%", anything, "50L"),
     "as.integer(x * 7.001)" = rex::rex("as.integer", anything, "7001L", anything, "%/%", anything, "1000L"),
+    "as.integer(x / 0.13)" = rex::rex("as.integer", anything, "100L", anything, "%/%", anything, "13L"),
     "as.integer(x * 365.2501)" = rex::rex(
       "as.integer",
       anything,

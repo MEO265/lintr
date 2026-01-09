@@ -20,6 +20,11 @@
 #'   linters = decimal_fraction_linter()
 #' )
 #'
+#' lint(
+#'   text = "as.integer(x / 0.13)",
+#'   linters = decimal_fraction_linter()
+#' )
+#'
 #' # okay
 #' lint(
 #'   text = "as.integer(x * 365)",
@@ -40,12 +45,17 @@ decimal_fraction_linter <- function() {
       xml_calls,
       "parent::expr[
         expr[2][
-          OP-STAR
-          and expr/NUM_CONST
-          and expr/NUM_CONST[
-            contains(text(), '.')
-            or contains(translate(text(), 'E', 'e'), 'e-')
-          ]
+          (
+            OP-STAR
+            and expr/NUM_CONST
+          ) or (
+            OP-SLASH
+            and expr[2]/NUM_CONST
+          )
+        ]
+        and expr[2]/expr/NUM_CONST[
+          contains(text(), '.')
+          or contains(translate(text(), 'E', 'e'), 'e-')
         ]
       ]"
     )
@@ -67,12 +77,16 @@ decimal_fraction_linter <- function() {
     num_text <- xml_text(num_expr)
     other_expr <- xml_find_all(arg_expr, "./expr[not(NUM_CONST)]")
     other_factor <- xml_text(other_expr)
+    operator <- vapply(arg_expr, function(expr) {
+      xml_name(xml_find_first(expr, "./OP-STAR | ./OP-SLASH"))
+    }, character(1L))
 
     ok <- nzchar(other_factor)
     bad_expr <- bad_expr[ok]
     arg_expr <- arg_expr[ok]
     num_text <- num_text[ok]
     other_factor <- other_factor[ok]
+    operator <- operator[ok]
     if (length(bad_expr) == 0L) {
       return(list())
     }
@@ -83,6 +97,7 @@ decimal_fraction_linter <- function() {
     arg_expr <- arg_expr[has_fraction]
     other_factor <- other_factor[has_fraction]
     fractions <- fractions[has_fraction]
+    operator <- operator[has_fraction]
     if (length(bad_expr) == 0L) {
       return(list())
     }
@@ -90,11 +105,17 @@ decimal_fraction_linter <- function() {
     arg_text <- xml_text(arg_expr)
     lint_message <- vapply(seq_along(bad_expr), function(idx) {
       fraction <- fractions[[idx]]
+      numerator <- fraction[["numerator"]]
+      denominator <- fraction[["denominator"]]
+      if (operator[[idx]] == "OP-SLASH") {
+        numerator <- fraction[["denominator"]]
+        denominator <- fraction[["numerator"]]
+      }
       replacement <- sprintf(
         "as.integer(((%s) * %dL)%%/%% %dL)",
         other_factor[[idx]],
-        fraction[["numerator"]],
-        fraction[["denominator"]]
+        numerator,
+        denominator
       )
       sprintf(
         "Use %s instead of as.integer(%s) to avoid floating-point rounding.",

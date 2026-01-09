@@ -27,6 +27,11 @@ lint(
   linters = decimal_fraction_linter()
 )
 
+lint(
+  text = "as.integer(x / 0.13)",
+  linters = decimal_fraction_linter()
+)
+
 # okay
 lint(
   text = "as.integer(x * 365)",
