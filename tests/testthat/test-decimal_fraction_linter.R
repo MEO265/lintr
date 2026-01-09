@@ -95,12 +95,22 @@ test_that("decimal_fraction_linter lint points at number start", {
 
   expect_lint(
     "as.integer(x * 0.14)",
-    list(message = rex::rex("7L", anything, "50L"), column_number = 16L),
+    list(
+      message = rex::rex("7L", anything, "50L"),
+      line_number = 1L,
+      column_number = 16L,
+      ranges = list(c(16L, 19L))
+    ),
     linter
   )
   expect_lint(
     "as.integer(x / 0.13)",
-    list(message = rex::rex("100L", anything, "13L"), column_number = 16L),
+    list(
+      message = rex::rex("100L", anything, "13L"),
+      line_number = 1L,
+      column_number = 16L,
+      ranges = list(c(16L, 19L))
+    ),
     linter
   )
 })
