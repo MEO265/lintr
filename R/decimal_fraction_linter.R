@@ -47,13 +47,13 @@ decimal_fraction_linter <- function() {
         expr[2][
           (
             OP-STAR
-            and expr/NUM_CONST
+            and expr//NUM_CONST
           ) or (
             OP-SLASH
-            and expr[2]/NUM_CONST
+            and expr[2]//NUM_CONST
           )
         ]
-        and expr[2]/expr/NUM_CONST[
+        and expr[2]//NUM_CONST[
           contains(text(), '.')
           or contains(translate(text(), 'E', 'e'), 'e-')
         ]
@@ -73,9 +73,13 @@ decimal_fraction_linter <- function() {
     }
 
     arg_expr <- xml_find_all(bad_expr, "expr[2]")
-    num_expr <- xml_find_all(arg_expr, "./expr/NUM_CONST")
+    expr_children <- xml_find_all(arg_expr, "./expr")
+    is_numeric_child <- vapply(expr_children, function(expr) {
+      !is.na(xml_find_first(expr, ".//NUM_CONST"))
+    }, logical(1L))
+    num_expr <- xml_find_all(expr_children[is_numeric_child], ".//NUM_CONST")
     num_text <- xml_text(num_expr)
-    other_expr <- xml_find_all(arg_expr, "./expr[not(NUM_CONST)]")
+    other_expr <- expr_children[!is_numeric_child]
     other_factor <- xml_text(other_expr)
     operator <- vapply(arg_expr, function(expr) {
       xml_name(xml_find_first(expr, "./OP-STAR | ./OP-SLASH"))
@@ -91,6 +95,9 @@ decimal_fraction_linter <- function() {
       return(list())
     }
 
+    is_negative <- vapply(num_expr, function(expr) {
+      !is.na(xml_find_first(expr, "ancestor::expr[OP-MINUS and count(expr) = 1]"))
+    }, logical(1L))
     fractions <- lapply(num_text, float_to_fraction)
     has_fraction <- vapply(fractions, Negate(is.null), logical(1L))
     bad_expr <- bad_expr[has_fraction]
@@ -98,6 +105,7 @@ decimal_fraction_linter <- function() {
     other_factor <- other_factor[has_fraction]
     fractions <- fractions[has_fraction]
     operator <- operator[has_fraction]
+    is_negative <- is_negative[has_fraction]
     if (length(bad_expr) == 0L) {
       return(list())
     }
@@ -107,9 +115,15 @@ decimal_fraction_linter <- function() {
       fraction <- fractions[[idx]]
       numerator <- fraction[["numerator"]]
       denominator <- fraction[["denominator"]]
+      if (is_negative[[idx]]) {
+        numerator <- -numerator
+      }
       if (operator[[idx]] == "OP-SLASH") {
         numerator <- fraction[["denominator"]]
         denominator <- fraction[["numerator"]]
+        if (is_negative[[idx]]) {
+          numerator <- -numerator
+        }
       }
       replacement <- sprintf(
         "as.integer(((%s) * %dL)%%/%% %dL)",

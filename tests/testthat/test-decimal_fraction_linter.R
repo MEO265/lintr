@@ -19,6 +19,7 @@ test_that("decimal_fraction_linter flags decimal fractions", {
     "as.integer(0.125 * x)" = rex::rex("as.integer", anything, "1L", anything, "%/%", anything, "8L"),
     "as.integer(x * 3.2)" = rex::rex("as.integer", anything, "16L", anything, "%/%", anything, "5L"),
     "as.integer(x * 0.14)" = rex::rex("as.integer", anything, "7L", anything, "%/%", anything, "50L"),
+    "as.integer(x * -0.14)" = rex::rex("as.integer", anything, "-7L", anything, "%/%", anything, "50L"),
     "as.integer(x * 7.001)" = rex::rex("as.integer", anything, "7001L", anything, "%/%", anything, "1000L"),
     "as.integer(x / 0.13)" = rex::rex("as.integer", anything, "100L", anything, "%/%", anything, "13L"),
     "as.integer(x * 365.2501)" = rex::rex(
@@ -61,7 +62,6 @@ test_that("decimal_fraction_linter skips integer-like conversions", {
     "as.integer(x * 365.0)",
     "as.integer(x * 1e3)",
     "as.integer(x * 3.2e2)",
-    "as.integer(x * -0.14)",
     "as.integer(0.13 / x)",
     "as.numeric(x * 365.25)"
   )
@@ -74,6 +74,7 @@ test_that("decimal_fraction_linter skips integer-like conversions", {
 test_that("decimal_fraction_linter helpers parse fractions", {
   expect_identical(float_to_fraction("3.2"), list(numerator = 16L, denominator = 5L))
   expect_identical(float_to_fraction("0.14"), list(numerator = 7L, denominator = 50L))
+  expect_identical(float_to_fraction("-0.14"), list(numerator = -7L, denominator = 50L))
   expect_identical(float_to_fraction("7.001"), list(numerator = 7001L, denominator = 1000L))
   expect_identical(float_to_fraction("3e-5"), list(numerator = 3L, denominator = 100000L))
   expect_identical(float_to_fraction("1e-3"), list(numerator = 1L, denominator = 1000L))
