@@ -66,3 +66,25 @@ test_that("decimal_fraction_linter skips integer-like conversions", {
     expect_lint(input, NULL, linter)
   }
 })
+
+test_that("decimal_fraction_linter helpers parse fractions", {
+  expect_identical(float_to_fraction("3.2"), list(numerator = 16L, denominator = 5L))
+  expect_identical(float_to_fraction("0.14"), list(numerator = 7L, denominator = 50L))
+  expect_identical(float_to_fraction("7.001"), list(numerator = 7001L, denominator = 1000L))
+  expect_identical(float_to_fraction("3e-5"), list(numerator = 3L, denominator = 100000L))
+  expect_identical(float_to_fraction("1e-3"), list(numerator = 1L, denominator = 1000L))
+})
+
+test_that("decimal_fraction_linter helpers skip integer-like inputs", {
+  expect_null(float_to_fraction("3"))
+  expect_null(float_to_fraction("3L"))
+  expect_null(float_to_fraction("3.0"))
+  expect_null(float_to_fraction("1e3"))
+})
+
+test_that("decimal_fraction_linter helpers reduce and reject fractions", {
+  expect_identical(normalize_fraction(12L, 20L), list(numerator = 3L, denominator = 5L))
+  expect_null(normalize_fraction(1L, 1L))
+  expect_null(normalize_fraction(1L, 0L))
+  expect_identical(int_gcd(18L, 12L), 6L)
+})
