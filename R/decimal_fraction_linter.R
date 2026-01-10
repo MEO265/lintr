@@ -102,7 +102,6 @@ decimal_fraction_linter <- function() {
     # we could build a malformed suggestion.
     ok <- nzchar(other_factor)
     bad_expr <- bad_expr[ok]
-    arg_expr <- arg_expr[ok]
     num_text <- num_text[ok]
     other_factor <- other_factor[ok]
     operator <- operator[ok]
@@ -114,7 +113,6 @@ decimal_fraction_linter <- function() {
     fractions <- lapply(num_text, float_to_fraction)
     has_fraction <- vapply(fractions, Negate(is.null), logical(1L))
     bad_expr <- bad_expr[has_fraction]
-    arg_expr <- arg_expr[has_fraction]
     other_factor <- other_factor[has_fraction]
     fractions <- fractions[has_fraction]
     operator <- operator[has_fraction]
@@ -123,7 +121,6 @@ decimal_fraction_linter <- function() {
       return(list())
     }
 
-    arg_text <- xml_text(arg_expr)
     lint_message <- vapply(seq_along(bad_expr), function(idx) {
       fraction <- fractions[[idx]]
       sign_factor <- ifelse(is_negative[[idx]], -1L, 1L)
@@ -133,18 +130,19 @@ decimal_fraction_linter <- function() {
         numerator <- sign_factor * fraction[["denominator"]]
         denominator <- fraction[["numerator"]]
       }
-      mult_part <- if (numerator == 1L) "" else sprintf(" * %dL", numerator)
-      div_part <- if (denominator == 1L) "" else sprintf(" %%/%% %dL", denominator)
+      has_mult_part <- numerator != 1L
+      has_div_part <- denominator != 1L
+      mult_part <- if (has_mult_part) sprintf(" * %dL", numerator) else ""
+      div_part <- if (has_div_part) sprintf(" %%/%% %dL", denominator) else ""
       replacement <- sprintf(
-        "as.integer((%s)%s%s)",
+        if(has_mult_part && has_div_part) "as.integer((%s%s)%s)" else "as.integer(%s%s%s)",
         other_factor[[idx]],
         mult_part,
         div_part
       )
       sprintf(
-        "Use %s instead of as.integer(%s) to avoid floating-point rounding.",
-        replacement,
-        arg_text[[idx]]
+        "Use %s to avoid floating-point rounding.",
+        replacement
       )
     }, character(1L))
 

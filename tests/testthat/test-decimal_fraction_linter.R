@@ -2,17 +2,7 @@ test_that("decimal_fraction_linter flags decimal fractions", {
   linter <- decimal_fraction_linter()
 
   cases <- list(
-    "as.integer(x * 365.25)" = rex::rex(
-      "Use",
-      anything,
-      "1461L",
-      anything,
-      "%/% 4L",
-      anything,
-      "as.integer",
-      anything,
-      "365.25"
-    ),
+    "as.integer(x * 365.25)" = rex::rex("Use", anything, "1461L", anything, "%/% 4L"),
     "as.integer(365.25 * x)" = rex::rex("1461L", anything, "%/% 4L"),
     "as.integer((x + y) * 365.25)" = rex::rex("1461L", anything, "%/% 4L"),
     "as.integer(x * 0.1)" = rex::rex("as.integer", anything, "%/%", anything, "10L"),
@@ -23,15 +13,7 @@ test_that("decimal_fraction_linter flags decimal fractions", {
     "as.integer(x * 7.001)" = rex::rex("as.integer", anything, "7001L", anything, "%/%", anything, "1000L"),
     "as.integer(x / 0.13)" = rex::rex("as.integer", anything, "100L", anything, "%/%", anything, "13L"),
     "as.integer(x / 0.5)" = rex::rex("as.integer", anything, "2L"),
-    "as.integer(x * 365.2501)" = rex::rex(
-      "as.integer",
-      anything,
-      "3652501L",
-      anything,
-      "%/%",
-      anything,
-      "10000L"
-    )
+    "as.integer(x * 365.2501)" = rex::rex("as.integer", anything, "3652501L", anything, "%/%", anything, "10000L")
   )
 
   for (input in names(cases)) {
