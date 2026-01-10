@@ -9,6 +9,7 @@
 ## Notes
 
 * {lintr} now requires R 4.1.0
+* `decimal_fraction_linter()` now suggests integer-arithmetic replacements for decimal `as.integer()` conversions to avoid floating-point rounding.
 
 # lintr (3.3.0-1)
 
