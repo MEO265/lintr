@@ -84,6 +84,9 @@ decimal_fraction_linter <- function() {
     operator <- vapply(arg_expr, function(expr) {
       xml_name(xml_find_first(expr, "./OP-STAR | ./OP-SLASH"))
     }, character(1L))
+    is_negative <- vapply(num_expr, function(expr) {
+      !is.na(xml_find_first(expr, "ancestor::expr[OP-MINUS and count(expr) = 1]"))
+    }, logical(1L))
 
     ok <- nzchar(other_factor)
     bad_expr <- bad_expr[ok]
@@ -91,13 +94,11 @@ decimal_fraction_linter <- function() {
     num_text <- num_text[ok]
     other_factor <- other_factor[ok]
     operator <- operator[ok]
+    is_negative <- is_negative[ok]
     if (length(bad_expr) == 0L) {
       return(list())
     }
 
-    is_negative <- vapply(num_expr, function(expr) {
-      !is.na(xml_find_first(expr, "ancestor::expr[OP-MINUS and count(expr) = 1]"))
-    }, logical(1L))
     fractions <- lapply(num_text, float_to_fraction)
     has_fraction <- vapply(fractions, Negate(is.null), logical(1L))
     bad_expr <- bad_expr[has_fraction]
@@ -113,17 +114,12 @@ decimal_fraction_linter <- function() {
     arg_text <- xml_text(arg_expr)
     lint_message <- vapply(seq_along(bad_expr), function(idx) {
       fraction <- fractions[[idx]]
-      numerator <- fraction[["numerator"]]
+      sign_factor <- ifelse(is_negative[[idx]], -1L, 1L)
+      numerator <- sign_factor * fraction[["numerator"]]
       denominator <- fraction[["denominator"]]
-      if (is_negative[[idx]]) {
-        numerator <- -numerator
-      }
       if (operator[[idx]] == "OP-SLASH") {
-        numerator <- fraction[["denominator"]]
+        numerator <- sign_factor * fraction[["denominator"]]
         denominator <- fraction[["numerator"]]
-        if (is_negative[[idx]]) {
-          numerator <- -numerator
-        }
       }
       replacement <- sprintf(
         "as.integer(((%s) * %dL)%%/%% %dL)",
