@@ -41,6 +41,9 @@ decimal_fraction_linter <- function() {
       return(list())
     }
 
+    # Match as.integer calls where the argument is a simple binary expr with a
+    # decimal literal (including 1e-3-style) so we can safely suggest integer
+    # arithmetic replacements.
     bad_expr <- xml_find_all(
       xml_calls,
       "parent::expr[
@@ -84,6 +87,8 @@ decimal_fraction_linter <- function() {
     operator <- vapply(arg_expr, function(expr) {
       xml_name(xml_find_first(expr, "./OP-STAR | ./OP-SLASH"))
     }, character(1L))
+    # Unary minus is its own node in the XML AST, so we need to inspect ancestors
+    # to preserve sign in the replacement suggestion.
     is_negative <- vapply(num_expr, function(expr) {
       !is.na(xml_find_first(expr, "ancestor::expr[OP-MINUS and count(expr) = 1]"))
     }, logical(1L))
@@ -121,11 +126,13 @@ decimal_fraction_linter <- function() {
         numerator <- sign_factor * fraction[["denominator"]]
         denominator <- fraction[["numerator"]]
       }
+      mult_part <- if (numerator == 1L) "" else sprintf(" * %dL", numerator)
+      div_part <- if (denominator == 1L) "" else sprintf(" %%/%% %dL", denominator)
       replacement <- sprintf(
-        "as.integer(((%s) * %dL)%%/%% %dL)",
+        "as.integer((%s)%s%s)",
         other_factor[[idx]],
-        numerator,
-        denominator
+        mult_part,
+        div_part
       )
       sprintf(
         "Use %s instead of as.integer(%s) to avoid floating-point rounding.",
@@ -159,6 +166,7 @@ float_to_fraction <- function(number) {
   fractional_part <- if (length(parts) > 1L) parts[[2L]] else ""
   integer_part <- ifelse(nzchar(integer_part), integer_part, "0")
 
+  # Use decimal digits for numerator/denominator to avoid floating-point drift.
   numerator <- as.integer(paste0(integer_part, fractional_part))
   if (is.na(numerator)) {
     return(NULL)
@@ -174,6 +182,7 @@ skip_float_fraction <- function(mantissa, exponent) {
   if (!grepl(".", mantissa, fixed = TRUE)) {
     return(exponent >= 0L)
   }
+  # Positive exponents create integer-like values (e.g., 3.2e2) that we skip.
   if (exponent > 0L) {
     return(TRUE)
   }
