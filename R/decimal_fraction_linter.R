@@ -36,7 +36,8 @@
 #' @export
 decimal_fraction_linter <- function() {
   Linter(linter_level = "expression", function(source_expression) {
-    xml_calls <- source_expression$xml_find_function_calls("as.integer")
+    tracked_funs <- c("as.integer", "ceiling", "floor", "trunc")
+    xml_calls <- source_expression$xml_find_function_calls(tracked_funs)
     if (length(xml_calls) == 0L) {
       return(list())
     }
@@ -121,6 +122,7 @@ decimal_fraction_linter <- function() {
       return(list())
     }
 
+    call_names <- xp_call_name(bad_expr, depth = 1L)
     lint_message <- vapply(seq_along(bad_expr), function(idx) {
       fraction <- fractions[[idx]]
       sign_factor <- ifelse(is_negative[[idx]], -1L, 1L)
@@ -133,9 +135,11 @@ decimal_fraction_linter <- function() {
       has_mult_part <- numerator != 1L
       has_div_part <- denominator != 1L
       mult_part <- if (has_mult_part) sprintf(" * %dL", numerator) else ""
-      div_part <- if (has_div_part) sprintf(" %%/%% %dL", denominator) else ""
+      div_part <- if (has_div_part) sprintf(" / %dL", denominator) else ""
+      replacement_template <- if (has_mult_part && has_div_part) "%s((%s%s)%s)" else "%s(%s%s%s)"
       replacement <- sprintf(
-        if(has_mult_part && has_div_part) "as.integer((%s%s)%s)" else "as.integer(%s%s%s)",
+        replacement_template,
+        call_names[[idx]],
         other_factor[[idx]],
         mult_part,
         div_part
