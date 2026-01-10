@@ -48,6 +48,9 @@ test_that("decimal_fraction_linter skips integer-like conversions", {
     "as.integer(x * 365.0)",
     "as.integer(x * 1e3)",
     "as.integer(x * 3.2e2)",
+    "as.integer(x * NaN)",
+    "as.integer(x * Inf)",
+    "as.integer(x / Inf)",
     "as.integer(0.13 / x)",
     "as.numeric(x * 365.25)"
   )
