@@ -162,6 +162,12 @@ decimal_fraction_linter <- function() {
   })
 }
 
+#' Convert a decimal literal to a reduced fraction
+#'
+#' @param number Character scalar decimal literal.
+#' @return A list with `numerator` and `denominator`, or `NULL` if the literal is unsuitable.
+#' @keywords internal
+#' @rdname decimal_fraction_helpers
 float_to_fraction <- function(number) {
   split_exp <- strsplit(number, "[eE]", perl = TRUE)[[1L]]
   mantissa <- split_exp[[1L]]
@@ -187,6 +193,13 @@ float_to_fraction <- function(number) {
   normalize_fraction(numerator, denominator)
 }
 
+#' Decide whether to skip fraction conversion
+#'
+#' @param mantissa Character scalar mantissa.
+#' @param exponent Integer exponent from scientific notation.
+#' @return `TRUE` when the literal should be ignored.
+#' @keywords internal
+#' @rdname decimal_fraction_helpers
 skip_float_fraction <- function(mantissa, exponent) {
   if (!grepl(".", mantissa, fixed = TRUE)) {
     return(exponent >= 0L)
@@ -201,6 +214,13 @@ skip_float_fraction <- function(mantissa, exponent) {
   FALSE
 }
 
+#' Normalize a fraction into reduced integer form
+#'
+#' @param numerator Integer numerator.
+#' @param denominator Integer denominator.
+#' @return A reduced fraction list or `NULL` if invalid.
+#' @keywords internal
+#' @rdname decimal_fraction_helpers
 normalize_fraction <- function(numerator, denominator) {
   if (abs(numerator) > .Machine[["integer.max"]] || denominator > .Machine[["integer.max"]]) {
     return(NULL)
@@ -220,6 +240,13 @@ normalize_fraction <- function(numerator, denominator) {
   list(numerator = numerator, denominator = denominator)
 }
 
+#' Compute the greatest common divisor for integers
+#'
+#' @param a Integer.
+#' @param b Integer.
+#' @return Integer greatest common divisor.
+#' @keywords internal
+#' @rdname decimal_fraction_helpers
 int_gcd <- function(a, b) {
   while (b != 0L) {
     tmp <- b
