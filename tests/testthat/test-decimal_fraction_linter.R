@@ -2,18 +2,21 @@ test_that("decimal_fraction_linter flags decimal fractions", {
   linter <- decimal_fraction_linter()
 
   cases <- list(
-    "as.integer(x * 365.25)" = rex::rex("Use", anything, "1461L", anything, "%/% 4L"),
-    "as.integer(365.25 * x)" = rex::rex("1461L", anything, "%/% 4L"),
-    "as.integer((x + y) * 365.25)" = rex::rex("1461L", anything, "%/% 4L"),
-    "as.integer(x * 0.1)" = rex::rex("as.integer", anything, "%/%", anything, "10L"),
-    "as.integer(0.125 * x)" = rex::rex("as.integer", anything, "%/%", anything, "8L"),
-    "as.integer(x * 3.2)" = rex::rex("as.integer", anything, "16L", anything, "%/%", anything, "5L"),
-    "as.integer(x * 0.14)" = rex::rex("as.integer", anything, "7L", anything, "%/%", anything, "50L"),
-    "as.integer(x * -0.14)" = rex::rex("as.integer", anything, "-7L", anything, "%/%", anything, "50L"),
-    "as.integer(x * 7.001)" = rex::rex("as.integer", anything, "7001L", anything, "%/%", anything, "1000L"),
-    "as.integer(x / 0.13)" = rex::rex("as.integer", anything, "100L", anything, "%/%", anything, "13L"),
+    "as.integer(x * 365.25)" = rex::rex("Use", anything, "1461L", anything, "/ 4L"),
+    "as.integer(365.25 * x)" = rex::rex("1461L", anything, "/ 4L"),
+    "as.integer((x + y) * 365.25)" = rex::rex("1461L", anything, "/ 4L"),
+    "as.integer(x * 0.1)" = rex::rex("as.integer", anything, "/", anything, "10L"),
+    "as.integer(0.125 * x)" = rex::rex("as.integer", anything, "/", anything, "8L"),
+    "as.integer(x * 3.2)" = rex::rex("as.integer", anything, "16L", anything, "/", anything, "5L"),
+    "as.integer(x * 0.14)" = rex::rex("as.integer", anything, "7L", anything, "/", anything, "50L"),
+    "as.integer(x * -0.14)" = rex::rex("as.integer", anything, "-7L", anything, "/", anything, "50L"),
+    "as.integer(x * 7.001)" = rex::rex("as.integer", anything, "7001L", anything, "/", anything, "1000L"),
+    "as.integer(x / 0.13)" = rex::rex("as.integer", anything, "100L", anything, "/", anything, "13L"),
     "as.integer(x / 0.5)" = rex::rex("as.integer", anything, "2L"),
-    "as.integer(x * 365.2501)" = rex::rex("as.integer", anything, "3652501L", anything, "%/%", anything, "10000L")
+    "as.integer(x * 365.2501)" = rex::rex("as.integer", anything, "3652501L", anything, "/", anything, "10000L"),
+    "ceiling(x * 365.25)" = rex::rex("ceiling", anything, "1461L", anything, "/ 4L"),
+    "floor(x / 0.13)" = rex::rex("floor", anything, "100L", anything, "/ 13L"),
+    "trunc(x * 0.14)" = rex::rex("trunc", anything, "7L", anything, "/", anything, "50L")
   )
 
   for (input in names(cases)) {
@@ -25,8 +28,8 @@ test_that("decimal_fraction_linter flags negative exponent fractions", {
   linter <- decimal_fraction_linter()
 
   cases <- list(
-    "as.integer(x * 3e-5)" = rex::rex("as.integer", anything, "3L", anything, "%/%", anything, "100000L"),
-    "as.integer(x * 1e-3)" = rex::rex("as.integer", anything, "%/%", anything, "1000L")
+    "as.integer(x * 3e-5)" = rex::rex("as.integer", anything, "3L", anything, "/", anything, "100000L"),
+    "as.integer(x * 1e-3)" = rex::rex("as.integer", anything, "/", anything, "1000L")
   )
 
   for (input in names(cases)) {
@@ -108,9 +111,9 @@ test_that("decimal_fraction_linter drops redundant integer operations", {
   lints <- lint(text = "as.integer(x * 0.1)", linters = linter)
   message <- lints[[1L]]$message
   expect_false(grepl("* 1L", message, fixed = TRUE))
-  expect_false(grepl("%/% 1L", message, fixed = TRUE))
+  expect_false(grepl("/ 1L", message, fixed = TRUE))
 
   lints <- lint(text = "as.integer(x / 0.5)", linters = linter)
   message <- lints[[1L]]$message
-  expect_false(grepl("%/% 1L", message, fixed = TRUE))
+  expect_false(grepl("/ 1L", message, fixed = TRUE))
 })
