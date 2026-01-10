@@ -6,10 +6,13 @@
 * Arguments `allow_cascading_assign=`, `allow_right_assign=`, and `allow_pipe_assign=` to `assignment_linter()` are now removed. Use `operator=` instead.
 * Argument `interpret_glue` to `object_usage_linter()`, marked deprecated in the previous release, is now defunct. Use `interpret_extensions=` instead; see the 3.3.0-1 release notes and `?object_usage_linter` for more.
 
+## New linters
+
+* `decimal_fraction_linter()` now suggests integer-arithmetic replacements for decimal `as.integer()` conversions to avoid floating-point rounding (@MEO265).
+
 ## Notes
 
 * {lintr} now requires R 4.1.0
-* `decimal_fraction_linter()` now suggests integer-arithmetic replacements for decimal `as.integer()` conversions to avoid floating-point rounding.
 
 # lintr (3.3.0-1)
 
