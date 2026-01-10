@@ -44,6 +44,8 @@ decimal_fraction_linter <- function() {
     # Match as.integer calls where the argument is a simple binary expr with a
     # decimal literal (including 1e-3-style) so we can safely suggest integer
     # arithmetic replacements.
+    # bad_expr narrows to as.integer(<binary>) so we can safely rewrite and
+    # pinpoint the literal; more complex expressions are left alone.
     bad_expr <- xml_find_all(
       xml_calls,
       "parent::expr[
@@ -93,6 +95,8 @@ decimal_fraction_linter <- function() {
       !is.na(xml_find_first(expr, "ancestor::expr[OP-MINUS and count(expr) = 1]"))
     }, logical(1L))
 
+    # Skip nodes where we failed to identify the non-numeric operand; otherwise
+    # we could build a malformed suggestion.
     ok <- nzchar(other_factor)
     bad_expr <- bad_expr[ok]
     arg_expr <- arg_expr[ok]
