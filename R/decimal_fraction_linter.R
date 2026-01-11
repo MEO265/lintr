@@ -111,7 +111,7 @@ decimal_fraction_linter <- function() {
       return(list())
     }
 
-    fractions <- lapply(num_text, float_to_fraction)
+    fractions <- lapply(num_text, decimal_literal_to_fraction)
     has_fraction <- vapply(fractions, Negate(is.null), logical(1L))
     bad_expr <- bad_expr[has_fraction]
     other_factor <- other_factor[has_fraction]
@@ -168,11 +168,11 @@ decimal_fraction_linter <- function() {
 #' @return A list with `numerator` and `denominator`, or `NULL` if the literal is unsuitable.
 #' @keywords internal
 #' @rdname decimal_fraction_helpers
-float_to_fraction <- function(number) {
+decimal_literal_to_fraction <- function(number) {
   split_exp <- strsplit(number, "[eE]", perl = TRUE)[[1L]]
   mantissa <- split_exp[[1L]]
   exponent <- if (length(split_exp) > 1L) as.integer(split_exp[[2L]]) else 0L
-  if (skip_float_fraction(mantissa, exponent)) {
+  if (should_skip_decimal_fraction(mantissa, exponent)) {
     return(NULL)
   }
 
@@ -190,7 +190,7 @@ float_to_fraction <- function(number) {
   if (exponent < 0L) {
     denominator <- denominator * 10.0^abs(exponent)
   }
-  normalize_fraction(numerator, denominator)
+  reduce_fraction(numerator, denominator)
 }
 
 #' Decide whether to skip fraction conversion
@@ -200,7 +200,7 @@ float_to_fraction <- function(number) {
 #' @return `TRUE` when the literal should be ignored.
 #' @keywords internal
 #' @rdname decimal_fraction_helpers
-skip_float_fraction <- function(mantissa, exponent) {
+should_skip_decimal_fraction <- function(mantissa, exponent) {
   if (!grepl(".", mantissa, fixed = TRUE)) {
     return(exponent >= 0L)
   }
@@ -221,7 +221,7 @@ skip_float_fraction <- function(mantissa, exponent) {
 #' @return A reduced fraction list or `NULL` if invalid.
 #' @keywords internal
 #' @rdname decimal_fraction_helpers
-normalize_fraction <- function(numerator, denominator) {
+reduce_fraction <- function(numerator, denominator) {
   if (abs(numerator) > .Machine[["integer.max"]] || denominator > .Machine[["integer.max"]]) {
     return(NULL)
   }
@@ -230,7 +230,7 @@ normalize_fraction <- function(numerator, denominator) {
   if (denominator == 0L) {
     return(NULL)
   }
-  divisor <- int_gcd(abs(numerator), denominator)
+  divisor <- integer_gcd(abs(numerator), denominator)
   numerator <- numerator %/% divisor
   denominator <- denominator %/% divisor
   if (denominator == 1L) {
@@ -247,7 +247,7 @@ normalize_fraction <- function(numerator, denominator) {
 #' @return Integer greatest common divisor.
 #' @keywords internal
 #' @rdname decimal_fraction_helpers
-int_gcd <- function(a, b) {
+integer_gcd <- function(a, b) {
   while (b != 0L) {
     tmp <- b
     b <- a %% b

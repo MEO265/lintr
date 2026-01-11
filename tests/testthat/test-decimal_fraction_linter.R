@@ -124,22 +124,22 @@ test_that("decimal_fraction_linter skips integer-like multipliers/divisors", {
 })
 
 test_that("decimal_fraction_linter helpers parse and normalize decimal fractions", {
-  expect_identical(float_to_fraction("3.2"), list(numerator = 16L, denominator = 5L))
-  expect_identical(float_to_fraction("0.14"), list(numerator = 7L, denominator = 50L))
-  expect_identical(float_to_fraction("-0.14"), list(numerator = -7L, denominator = 50L))
-  expect_identical(float_to_fraction("7.001"), list(numerator = 7001L, denominator = 1000L))
-  expect_identical(float_to_fraction("3e-5"), list(numerator = 3L, denominator = 100000L))
-  expect_identical(float_to_fraction("1e-3"), list(numerator = 1L, denominator = 1000L))
+  expect_identical(decimal_literal_to_fraction("3.2"), list(numerator = 16L, denominator = 5L))
+  expect_identical(decimal_literal_to_fraction("0.14"), list(numerator = 7L, denominator = 50L))
+  expect_identical(decimal_literal_to_fraction("-0.14"), list(numerator = -7L, denominator = 50L))
+  expect_identical(decimal_literal_to_fraction("7.001"), list(numerator = 7001L, denominator = 1000L))
+  expect_identical(decimal_literal_to_fraction("3e-5"), list(numerator = 3L, denominator = 100000L))
+  expect_identical(decimal_literal_to_fraction("1e-3"), list(numerator = 1L, denominator = 1000L))
 
-  expect_null(float_to_fraction("3"))
-  expect_null(float_to_fraction("3L"))
-  expect_null(float_to_fraction("3.0"))
-  expect_null(float_to_fraction("1e3"))
+  expect_null(decimal_literal_to_fraction("3"))
+  expect_null(decimal_literal_to_fraction("3L"))
+  expect_null(decimal_literal_to_fraction("3.0"))
+  expect_null(decimal_literal_to_fraction("1e3"))
 
-  expect_identical(normalize_fraction(12L, 20L), list(numerator = 3L, denominator = 5L))
-  expect_null(normalize_fraction(1L, 1L))
-  expect_null(normalize_fraction(1L, 0L))
-  expect_identical(int_gcd(18L, 12L), 6L)
+  expect_identical(reduce_fraction(12L, 20L), list(numerator = 3L, denominator = 5L))
+  expect_null(reduce_fraction(1L, 1L))
+  expect_null(reduce_fraction(1L, 0L))
+  expect_identical(integer_gcd(18L, 12L), 6L)
 })
 
 test_that("decimal_fraction_linter lint ranges start at decimal literal", {
