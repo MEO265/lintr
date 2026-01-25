@@ -147,37 +147,37 @@ test_that("decimal_fraction_linter respects lint_exact_binary", {
 })
 
 test_that("decimal_fraction_linter helpers parse and normalize decimal fractions", {
-  parts <- extract_decimal_parts_with_exp("3.2")
+  parts <- extract_decimal_parts("3.2")
   expect_identical(
     convert_parts_to_fraction(parts[["integer_part"]], parts[["fractional_part"]]),
     list(numerator = 16L, denominator = 5L)
   )
-  parts <- extract_decimal_parts_with_exp("0.14")
+  parts <- extract_decimal_parts("0.14")
   expect_identical(
     convert_parts_to_fraction(parts[["integer_part"]], parts[["fractional_part"]]),
     list(numerator = 7L, denominator = 50L)
   )
-  parts <- extract_decimal_parts_with_exp("-0.14")
+  parts <- extract_decimal_parts("-0.14")
   expect_identical(
     convert_parts_to_fraction(parts[["integer_part"]], parts[["fractional_part"]]),
     list(numerator = -7L, denominator = 50L)
   )
-  parts <- extract_decimal_parts_with_exp("7.001")
+  parts <- extract_decimal_parts("7.001")
   expect_identical(
     convert_parts_to_fraction(parts[["integer_part"]], parts[["fractional_part"]]),
     list(numerator = 7001L, denominator = 1000L)
   )
-  parts <- extract_decimal_parts_with_exp("3e-5")
+  parts <- extract_decimal_parts("3e-5")
   expect_identical(
     convert_parts_to_fraction(parts[["integer_part"]], parts[["fractional_part"]]),
     list(numerator = 3L, denominator = 100000L)
   )
-  parts <- extract_decimal_parts_with_exp("1e-3")
+  parts <- extract_decimal_parts("1e-3")
   expect_identical(
     convert_parts_to_fraction(parts[["integer_part"]], parts[["fractional_part"]]),
     list(numerator = 1L, denominator = 1000L)
   )
-  parts <- extract_decimal_parts_with_exp("1.23e1")
+  parts <- extract_decimal_parts("1.23e1")
   expect_identical(
     convert_parts_to_fraction(parts[["integer_part"]], parts[["fractional_part"]]),
     list(numerator = 123L, denominator = 10L)
@@ -186,7 +186,7 @@ test_that("decimal_fraction_linter helpers parse and normalize decimal fractions
   expect_true(is_exact_binary_literal("25"))
   expect_false(is_exact_binary_literal("1"))
 
-  parts <- extract_decimal_parts_with_exp("1.2300e0")
+  parts <- extract_decimal_parts("1.2300e0")
   expect_identical(parts[["fractional_part"]], "23")
 
   expect_identical(reduce_fraction(12L, 20L), list(numerator = 3L, denominator = 5L))

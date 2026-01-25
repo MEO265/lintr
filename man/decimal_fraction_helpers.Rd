@@ -2,7 +2,7 @@
 % Please edit documentation in R/decimal_fraction_linter.R
 \name{is_exact_binary_literal}
 \alias{is_exact_binary_literal}
-\alias{extract_decimal_parts_with_exp}
+\alias{extract_decimal_parts}
 \alias{convert_parts_to_fraction}
 \alias{reduce_fraction}
 \alias{integer_gcd}
@@ -10,7 +10,7 @@
 \usage{
 is_exact_binary_literal(fractional_part)
 
-extract_decimal_parts_with_exp(number)
+extract_decimal_parts(number)
 
 convert_parts_to_fraction(integer_part, fractional_part)
 

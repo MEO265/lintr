@@ -112,7 +112,7 @@ decimal_fraction_linter <- function(lint_exact_binary = FALSE) {
     }
 
     fractions <- lapply(filtered[["num_text"]], function(number) {
-      parts <- extract_decimal_parts_with_exp(number)
+      parts <- extract_decimal_parts(number)
       if (!lint_exact_binary && is_exact_binary_literal(parts[["fractional_part"]])) {
         return(NULL)
       }
@@ -232,7 +232,7 @@ is_exact_binary_literal <- function(fractional_part) {
 #' @return A list with `integer_part` and `fractional_part`, or `NULL` if invalid.
 #' @keywords internal
 #' @rdname decimal_fraction_helpers
-extract_decimal_parts_with_exp <- function(number) {
+extract_decimal_parts <- function(number) {
   split_exp <- strsplit(number, "[eE]", perl = TRUE)[[1L]]
   mantissa <- split_exp[[1L]]
   exponent <- if (length(split_exp) > 1L) as.integer(split_exp[[2L]]) else 0L
