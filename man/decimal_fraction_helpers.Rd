@@ -2,17 +2,17 @@
 % Please edit documentation in R/decimal_fraction_linter.R
 \name{is_exact_binary_literal}
 \alias{is_exact_binary_literal}
-\alias{decimal_parts_with_exp}
-\alias{decimal_parts_to_fraction}
+\alias{extract_decimal_parts_with_exp}
+\alias{convert_parts_to_fraction}
 \alias{reduce_fraction}
 \alias{integer_gcd}
 \title{Determine if a decimal literal is exactly representable in binary}
 \usage{
 is_exact_binary_literal(fractional_part)
 
-decimal_parts_with_exp(number)
+extract_decimal_parts_with_exp(number)
 
-decimal_parts_to_fraction(integer_part, fractional_part)
+convert_parts_to_fraction(integer_part, fractional_part)
 
 reduce_fraction(numerator, denominator)
 

@@ -112,11 +112,11 @@ decimal_fraction_linter <- function(lint_exact_binary = FALSE) {
     }
 
     fractions <- lapply(filtered[["num_text"]], function(number) {
-      parts <- decimal_parts_with_exp(number)
+      parts <- extract_decimal_parts_with_exp(number)
       if (!lint_exact_binary && is_exact_binary_literal(parts[["fractional_part"]])) {
         return(NULL)
       }
-      decimal_parts_to_fraction(
+      convert_parts_to_fraction(
         integer_part = parts[["integer_part"]],
         fractional_part = parts[["fractional_part"]]
       )
@@ -232,7 +232,7 @@ is_exact_binary_literal <- function(fractional_part) {
 #' @return A list with `integer_part` and `fractional_part`, or `NULL` if invalid.
 #' @keywords internal
 #' @rdname decimal_fraction_helpers
-decimal_parts_with_exp <- function(number) {
+extract_decimal_parts_with_exp <- function(number) {
   split_exp <- strsplit(number, "[eE]", perl = TRUE)[[1L]]
   mantissa <- split_exp[[1L]]
   exponent <- if (length(split_exp) > 1L) as.integer(split_exp[[2L]]) else 0L
@@ -272,7 +272,7 @@ decimal_parts_with_exp <- function(number) {
 #' @return A list with `numerator` and `denominator`, or `NULL` if invalid.
 #' @keywords internal
 #' @rdname decimal_fraction_helpers
-decimal_parts_to_fraction <- function(integer_part, fractional_part) {
+convert_parts_to_fraction <- function(integer_part, fractional_part) {
   numerator <- as.integer(paste0(integer_part, fractional_part))
   denominator <- 10.0^nchar(fractional_part)
   reduce_fraction(numerator, denominator)
