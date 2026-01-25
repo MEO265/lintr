@@ -100,7 +100,7 @@ decimal_fraction_linter <- function(lint_exact_binary = FALSE) {
       !is.na(xml_find_first(expr, "ancestor::expr[OP-MINUS and count(expr) = 1]"))
     }, logical(1L))
 
-    filtered <- filter_decimal_fraction_candidates(
+    filtered <- filter_decimal_fraction_inputs(
       bad_expr = bad_expr,
       num_text = num_text,
       other_factor = other_factor,
@@ -112,16 +112,16 @@ decimal_fraction_linter <- function(lint_exact_binary = FALSE) {
     }
 
     fractions <- lapply(filtered[["num_text"]], function(number) {
-      parts <- decimal_literal_parts_with_exponent(number)
+      parts <- decimal_parts_with_exp(number)
       if (!lint_exact_binary && is_exact_binary_literal(parts[["fractional_part"]])) {
         return(NULL)
       }
-      decimal_literal_parts_to_reduced_fraction(
+      decimal_parts_to_fraction(
         integer_part = parts[["integer_part"]],
         fractional_part = parts[["fractional_part"]]
       )
     })
-    filtered <- filter_decimal_fraction_fractions(
+    filtered <- filter_decimal_fractions(
       bad_expr = filtered[["bad_expr"]],
       other_factor = filtered[["other_factor"]],
       operator = filtered[["operator"]],
@@ -133,7 +133,7 @@ decimal_fraction_linter <- function(lint_exact_binary = FALSE) {
     }
 
     call_names <- xp_call_name(filtered[["bad_expr"]], depth = 1L)
-    lint_message <- build_decimal_fraction_lint_message(
+    lint_message <- build_decimal_fraction_message(
       fractions = filtered[["fractions"]],
       call_names = call_names,
       other_factor = filtered[["other_factor"]],
@@ -153,7 +153,7 @@ decimal_fraction_linter <- function(lint_exact_binary = FALSE) {
   })
 }
 
-filter_decimal_fraction_candidates <- function(bad_expr, num_text, other_factor, operator, is_negative) {
+filter_decimal_fraction_inputs <- function(bad_expr, num_text, other_factor, operator, is_negative) {
   ok <- nzchar(other_factor)
   list(
     bad_expr = bad_expr[ok],
@@ -164,7 +164,7 @@ filter_decimal_fraction_candidates <- function(bad_expr, num_text, other_factor,
   )
 }
 
-filter_decimal_fraction_fractions <- function(bad_expr, other_factor, operator, is_negative, fractions) {
+filter_decimal_fractions <- function(bad_expr, other_factor, operator, is_negative, fractions) {
   has_fraction <- vapply(fractions, Negate(is.null), logical(1L))
   list(
     bad_expr = bad_expr[has_fraction],
@@ -175,7 +175,7 @@ filter_decimal_fraction_fractions <- function(bad_expr, other_factor, operator, 
   )
 }
 
-build_decimal_fraction_lint_message <- function(fractions, call_names, other_factor, operator, is_negative) {
+build_decimal_fraction_message <- function(fractions, call_names, other_factor, operator, is_negative) {
   vapply(seq_along(fractions), function(idx) {
     fraction <- fractions[[idx]]
     sign_factor <- ifelse(is_negative[[idx]], -1L, 1L)
@@ -232,7 +232,7 @@ is_exact_binary_literal <- function(fractional_part) {
 #' @return A list with `integer_part` and `fractional_part`, or `NULL` if invalid.
 #' @keywords internal
 #' @rdname decimal_fraction_helpers
-decimal_literal_parts_with_exponent <- function(number) {
+decimal_parts_with_exp <- function(number) {
   split_exp <- strsplit(number, "[eE]", perl = TRUE)[[1L]]
   mantissa <- split_exp[[1L]]
   exponent <- if (length(split_exp) > 1L) as.integer(split_exp[[2L]]) else 0L
@@ -272,7 +272,7 @@ decimal_literal_parts_with_exponent <- function(number) {
 #' @return A list with `numerator` and `denominator`, or `NULL` if invalid.
 #' @keywords internal
 #' @rdname decimal_fraction_helpers
-decimal_literal_parts_to_reduced_fraction <- function(integer_part, fractional_part) {
+decimal_parts_to_fraction <- function(integer_part, fractional_part) {
   numerator <- as.integer(paste0(integer_part, fractional_part))
   denominator <- 10.0^nchar(fractional_part)
   reduce_fraction(numerator, denominator)
