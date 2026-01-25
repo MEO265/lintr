@@ -83,6 +83,7 @@ test_that("decimal_fraction_linter flags negative exponent fractional literals",
 
 test_that("decimal_fraction_linter skips integer-like multipliers/divisors", {
   linter <- decimal_fraction_linter()
+  linter_exact <- decimal_fraction_linter(lint_exact_binary = TRUE)
 
   expect_no_lint("as.integer(x * 365)", linter)
   expect_no_lint("as.integer(x * 3.0)", linter)
@@ -103,26 +104,55 @@ test_that("decimal_fraction_linter skips integer-like multipliers/divisors", {
   expect_no_lint("as.integer(x / Inf)", linter)
   expect_no_lint("as.integer(0.13 / x)", linter)
   expect_no_lint("as.numeric(x * 365.25)", linter)
+  expect_lint(
+    "as.integer(0.125 * x)",
+    list(message = rex::rex("Use", anything, "8L", anything, "avoid floating-point rounding")),
+    linter_exact
+  )
 })
 
 test_that("decimal_fraction_linter helpers parse and normalize decimal fractions", {
-  expect_identical(decimal_literal_to_reduced_fraction("3.2"), list(numerator = 16L, denominator = 5L))
-  expect_identical(decimal_literal_to_reduced_fraction("0.14"), list(numerator = 7L, denominator = 50L))
-  expect_identical(decimal_literal_to_reduced_fraction("-0.14"), list(numerator = -7L, denominator = 50L))
-  expect_identical(decimal_literal_to_reduced_fraction("7.001"), list(numerator = 7001L, denominator = 1000L))
-  expect_identical(decimal_literal_to_reduced_fraction("3e-5"), list(numerator = 3L, denominator = 100000L))
-  expect_identical(decimal_literal_to_reduced_fraction("1e-3"), list(numerator = 1L, denominator = 1000L))
-  expect_identical(decimal_literal_to_reduced_fraction("1.23e1"), list(numerator = 123L, denominator = 10L))
+  parts <- decimal_literal_parts_with_exponent("3.2")
+  expect_identical(
+    decimal_literal_parts_to_reduced_fraction(parts[["integer_part"]], parts[["fractional_part"]]),
+    list(numerator = 16L, denominator = 5L)
+  )
+  parts <- decimal_literal_parts_with_exponent("0.14")
+  expect_identical(
+    decimal_literal_parts_to_reduced_fraction(parts[["integer_part"]], parts[["fractional_part"]]),
+    list(numerator = 7L, denominator = 50L)
+  )
+  parts <- decimal_literal_parts_with_exponent("-0.14")
+  expect_identical(
+    decimal_literal_parts_to_reduced_fraction(parts[["integer_part"]], parts[["fractional_part"]]),
+    list(numerator = -7L, denominator = 50L)
+  )
+  parts <- decimal_literal_parts_with_exponent("7.001")
+  expect_identical(
+    decimal_literal_parts_to_reduced_fraction(parts[["integer_part"]], parts[["fractional_part"]]),
+    list(numerator = 7001L, denominator = 1000L)
+  )
+  parts <- decimal_literal_parts_with_exponent("3e-5")
+  expect_identical(
+    decimal_literal_parts_to_reduced_fraction(parts[["integer_part"]], parts[["fractional_part"]]),
+    list(numerator = 3L, denominator = 100000L)
+  )
+  parts <- decimal_literal_parts_with_exponent("1e-3")
+  expect_identical(
+    decimal_literal_parts_to_reduced_fraction(parts[["integer_part"]], parts[["fractional_part"]]),
+    list(numerator = 1L, denominator = 1000L)
+  )
+  parts <- decimal_literal_parts_with_exponent("1.23e1")
+  expect_identical(
+    decimal_literal_parts_to_reduced_fraction(parts[["integer_part"]], parts[["fractional_part"]]),
+    list(numerator = 123L, denominator = 10L)
+  )
 
   expect_true(is_exact_binary_literal("25"))
   expect_false(is_exact_binary_literal("1"))
 
-  expect_null(decimal_literal_to_reduced_fraction("3"))
-  expect_null(decimal_literal_to_reduced_fraction("3L"))
-  expect_null(decimal_literal_to_reduced_fraction("3.0"))
-  expect_null(decimal_literal_to_reduced_fraction("0.125"))
-  expect_null(decimal_literal_to_reduced_fraction("1.25e1"))
-  expect_null(decimal_literal_to_reduced_fraction("1e3"))
+  parts <- decimal_literal_parts_with_exponent("1.2300e0")
+  expect_identical(parts[["fractional_part"]], "23")
 
   expect_identical(reduce_fraction(12L, 20L), list(numerator = 3L, denominator = 5L))
   expect_null(reduce_fraction(1L, 1L))

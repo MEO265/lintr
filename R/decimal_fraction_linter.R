@@ -33,8 +33,9 @@
 #'
 #' @evalRd rd_tags("decimal_fraction_linter")
 #' @seealso [linters] for a complete list of linters available in lintr.
+#' @param lint_exact_binary Logical, whether to lint values exactly representable in binary.
 #' @export
-decimal_fraction_linter <- function() {
+decimal_fraction_linter <- function(lint_exact_binary = FALSE) {
   Linter(linter_level = "expression", function(source_expression) {
     tracked_funs <- c("as.integer", "ceiling", "floor", "trunc")
     xml_calls <- source_expression$xml_find_function_calls(tracked_funs)
@@ -111,7 +112,16 @@ decimal_fraction_linter <- function() {
       return(list())
     }
 
-    fractions <- lapply(num_text, decimal_literal_to_reduced_fraction)
+    fractions <- lapply(num_text, function(number) {
+      parts <- decimal_literal_parts_with_exponent(number)
+      if (!lint_exact_binary && is_exact_binary_literal(parts[["fractional_part"]])) {
+        return(NULL)
+      }
+      decimal_literal_parts_to_reduced_fraction(
+        integer_part = parts[["integer_part"]],
+        fractional_part = parts[["fractional_part"]]
+      )
+    })
     has_fraction <- vapply(fractions, Negate(is.null), logical(1L))
     bad_expr <- bad_expr[has_fraction]
     other_factor <- other_factor[has_fraction]
@@ -160,23 +170,6 @@ decimal_fraction_linter <- function() {
       range_end_xpath = "number(./expr[2]//NUM_CONST/@col2)"
     )
   })
-}
-
-#' Convert a decimal literal to a reduced fraction
-#'
-#' @param number Character scalar decimal literal.
-#' @return A list with `numerator` and `denominator`, or `NULL` if the literal is unsuitable.
-#' @keywords internal
-#' @rdname decimal_fraction_helpers
-decimal_literal_to_reduced_fraction <- function(number) {
-  parts <- decimal_literal_parts_with_exponent(number)
-  if (is_exact_binary_literal(parts[["fractional_part"]])) {
-    return(NULL)
-  }
-  decimal_literal_parts_to_reduced_fraction(
-    integer_part = parts[["integer_part"]],
-    fractional_part = parts[["fractional_part"]]
-  )
 }
 
 #' Determine if a decimal literal is exactly representable in binary
