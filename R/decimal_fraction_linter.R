@@ -111,7 +111,7 @@ decimal_fraction_linter <- function() {
       return(list())
     }
 
-    fractions <- lapply(num_text, decimal_literal_to_fraction)
+    fractions <- lapply(num_text, decimal_literal_to_reduced_fraction)
     has_fraction <- vapply(fractions, Negate(is.null), logical(1L))
     bad_expr <- bad_expr[has_fraction]
     other_factor <- other_factor[has_fraction]
@@ -168,50 +168,89 @@ decimal_fraction_linter <- function() {
 #' @return A list with `numerator` and `denominator`, or `NULL` if the literal is unsuitable.
 #' @keywords internal
 #' @rdname decimal_fraction_helpers
-decimal_literal_to_fraction <- function(number) {
+decimal_literal_to_reduced_fraction <- function(number) {
+  parts <- decimal_literal_parts_with_exponent(number)
+  if (is_exact_binary_literal(parts[["fractional_part"]])) {
+    return(NULL)
+  }
+  decimal_literal_parts_to_reduced_fraction(
+    integer_part = parts[["integer_part"]],
+    fractional_part = parts[["fractional_part"]]
+  )
+}
+
+#' Determine if a decimal literal is exactly representable in binary
+#'
+#' @param fractional_part Character scalar containing fractional digits.
+#' @return `TRUE` when the literal is exactly representable in binary.
+#' @keywords internal
+#' @rdname decimal_fraction_helpers
+is_exact_binary_literal <- function(fractional_part) {
+  if (fractional_part == "") {
+    return(TRUE)
+  }
+  fractional_digits <- as.integer(fractional_part)
+
+  digits <- nchar(fractional_part)
+  v5 <- 0L
+  while (fractional_digits %% 5L == 0L) {
+    fractional_digits <- fractional_digits / 5L
+    v5 <- v5 + 1L
+  }
+
+  v5 >= digits
+}
+
+#' Extract decimal literal parts with exponent applied
+#'
+#' @param number Character scalar decimal literal.
+#' @return A list with `integer_part` and `fractional_part`, or `NULL` if invalid.
+#' @keywords internal
+#' @rdname decimal_fraction_helpers
+decimal_literal_parts_with_exponent <- function(number) {
   split_exp <- strsplit(number, "[eE]", perl = TRUE)[[1L]]
   mantissa <- split_exp[[1L]]
   exponent <- if (length(split_exp) > 1L) as.integer(split_exp[[2L]]) else 0L
-  if (should_skip_decimal_fraction(mantissa, exponent)) {
-    return(NULL)
-  }
+  sign_char <- if (grepl("^[-+]", mantissa)) substr(mantissa, 1L, 1L) else ""
+  mantissa <- sub("^[-+]", "", mantissa)
 
   parts <- strsplit(mantissa, ".", fixed = TRUE)[[1L]]
   integer_part <- parts[[1L]]
   fractional_part <- if (length(parts) > 1L) parts[[2L]] else ""
   integer_part <- ifelse(nzchar(integer_part), integer_part, "0")
 
-  # Use decimal digits for numerator/denominator to avoid floating-point drift.
-  numerator <- as.integer(paste0(integer_part, fractional_part))
-  if (is.na(numerator)) {
-    return(NULL)
+  digits_text <- paste0(integer_part, fractional_part)
+  decimal_pos <- nchar(integer_part)
+  new_decimal_pos <- decimal_pos + exponent
+  if (new_decimal_pos >= nchar(digits_text)) {
+    integer_part <- paste0(digits_text, strrep("0", new_decimal_pos - nchar(digits_text)))
+    fractional_part <- ""
+  } else if (new_decimal_pos <= 0L) {
+    integer_part <- "0"
+    fractional_part <- paste0(strrep("0", abs(new_decimal_pos)), digits_text)
+  } else {
+    integer_part <- substr(digits_text, 1L, new_decimal_pos)
+    fractional_part <- substr(digits_text, new_decimal_pos + 1L, nchar(digits_text))
   }
-  denominator <- 10.0^nchar(fractional_part)
-  if (exponent < 0L) {
-    denominator <- denominator * 10.0^abs(exponent)
+  if (sign_char != "") {
+    integer_part <- paste0(sign_char, integer_part)
   }
-  reduce_fraction(numerator, denominator)
+
+  fractional_part <- sub("0+$", "", fractional_part)
+  list(integer_part = integer_part, fractional_part = fractional_part)
 }
 
-#' Decide whether to skip fraction conversion
+#' Convert decimal literal parts to a reduced fraction
 #'
-#' @param mantissa Character scalar mantissa.
-#' @param exponent Integer exponent from scientific notation.
-#' @return `TRUE` when the literal should be ignored.
+#' @param integer_part Character scalar integer part.
+#' @param fractional_part Character scalar fractional part.
+#' @return A list with `numerator` and `denominator`, or `NULL` if invalid.
 #' @keywords internal
 #' @rdname decimal_fraction_helpers
-should_skip_decimal_fraction <- function(mantissa, exponent) {
-  if (!grepl(".", mantissa, fixed = TRUE)) {
-    return(exponent >= 0L)
-  }
-  # Positive exponents create integer-like values (e.g., 3.2e2) that we skip.
-  if (exponent > 0L) {
-    return(TRUE)
-  }
-  if (exponent >= 0L && !grepl("[1-9]", mantissa)) {
-    return(TRUE)
-  }
-  FALSE
+decimal_literal_parts_to_reduced_fraction <- function(integer_part, fractional_part) {
+  numerator <- as.integer(paste0(integer_part, fractional_part))
+  denominator <- 10.0^nchar(fractional_part)
+  reduce_fraction(numerator, denominator)
 }
 
 #' Normalize a fraction into reduced integer form
