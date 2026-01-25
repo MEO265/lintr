@@ -88,6 +88,7 @@ test_that("decimal_fraction_linter skips integer-like multipliers/divisors", {
   expect_no_lint("as.integer(x * 365)", linter)
   expect_no_lint("as.integer(x * 3.0)", linter)
   expect_no_lint("as.integer(0.125 * x)", linter)
+  expect_no_lint("as.integer(x * 1.25)", linter)
   expect_no_lint("as.integer(x * 3)", linter)
   expect_no_lint("as.integer(x * 3L)", linter)
   expect_no_lint("as.integer(x * 365.0)", linter)
@@ -107,6 +108,40 @@ test_that("decimal_fraction_linter skips integer-like multipliers/divisors", {
   expect_lint(
     "as.integer(0.125 * x)",
     list(message = rex::rex("Use", anything, "8L", anything, "avoid floating-point rounding")),
+    linter_exact
+  )
+  expect_lint(
+    "as.integer(x * 0.5)",
+    list(message = rex::rex("Use", anything, "as.integer", anything, "x / 2L")),
+    linter_exact
+  )
+  expect_lint(
+    "as.integer(x / 0.25)",
+    list(message = rex::rex("Use", anything, "as.integer", anything, "4L")),
+    linter_exact
+  )
+})
+
+test_that("decimal_fraction_linter respects lint_exact_binary", {
+  linter <- decimal_fraction_linter()
+  linter_exact <- decimal_fraction_linter(lint_exact_binary = TRUE)
+
+  expect_no_lint("as.integer(x * 0.5)", linter)
+  expect_lint(
+    "as.integer(x * 0.5)",
+    list(message = rex::rex("Use", anything, "as.integer", anything, "x / 2L")),
+    linter_exact
+  )
+  expect_no_lint("as.integer(x / 0.25)", linter)
+  expect_lint(
+    "as.integer(x / 0.25)",
+    list(message = rex::rex("Use", anything, "as.integer", anything, "4L")),
+    linter_exact
+  )
+  expect_no_lint("as.integer(1.25 * x)", linter)
+  expect_lint(
+    "as.integer(1.25 * x)",
+    list(message = rex::rex("Use", anything, "5L", anything, "/ 4L")),
     linter_exact
   )
 })
