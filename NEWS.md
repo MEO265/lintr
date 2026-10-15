@@ -28,6 +28,7 @@
 ### New linters
 
 * `expect_shape_linter()` recommends usage of `testthat::expect_shape(x, ...)` over `expect_equal(nrow(x), n)`, `expect_equal(ncol(x), n)`, and `expect_equal(dim(x), d)` (#2893, @MichaelChirico).
+* `numerical_linter()` combines decimal-fraction rounding checks, floating-point comparisons, and numerical-stability recommendations in one configurable linter. Its four options retain the individual rules' defaults (#8, #9, #11, @MEO265).
 
 ### Linter improvements
 
@@ -166,6 +167,8 @@
 * `unnecessary_nesting_linter()` treats `=` assignment the same as `<-` for several pieces of logic (#2245 and #2829, @MichaelChirico).
 * `vector_logic_linter()` ignores scalar operators (`&&`/`||`) inside anonymous functions within `filter()`/`subset()` (#2935, @emmanuel-ferdman).
 * `unnecessary_lambda_linter()` skips lambdas with an outer unary operator like `sapply(x, \(xi) !all(xi))` (#2742, @MichaelChirico).
+## New linters
+
 
 ## Notes
 
