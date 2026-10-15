@@ -28,7 +28,7 @@
 ### New linters
 
 * `expect_shape_linter()` recommends usage of `testthat::expect_shape(x, ...)` over `expect_equal(nrow(x), n)`, `expect_equal(ncol(x), n)`, and `expect_equal(dim(x), d)` (#2893, @MichaelChirico).
-* `numerical_stability_linter()` recommends stable arithmetic, logarithmic special functions, and probability APIs. It supports `assume_real_numeric` and optional `include_heuristics` hints for domain-dependent replacements and log-sum-exp expressions. Partially named arguments are supported even when partial-matching warnings are treated as errors (#11, @MEO265).
+* `numerical_linter()` combines decimal-fraction rounding checks, floating-point comparisons, and numerical-stability recommendations in one configurable linter. Its four options retain the individual rules' defaults (#8, #9, #11, @MEO265).
 
 ### Linter improvements
 
@@ -169,7 +169,6 @@
 * `unnecessary_lambda_linter()` skips lambdas with an outer unary operator like `sapply(x, \(xi) !all(xi))` (#2742, @MichaelChirico).
 ## New linters
 
-* `decimal_fraction_linter()` now suggests integer-arithmetic replacements for decimal `as.integer()` conversions to avoid floating-point rounding (@MEO265).
 
 ## Notes
 

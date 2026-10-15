@@ -16,7 +16,6 @@ The following linters are tagged with 'efficiency':
 \item{\code{\link{any_is_na_linter}}}
 \item{\code{\link{boolean_arithmetic_linter}}}
 \item{\code{\link{consecutive_mutate_linter}}}
-\item{\code{\link{decimal_fraction_linter}}}
 \item{\code{\link{fixed_regex_linter}}}
 \item{\code{\link{if_switch_linter}}}
 \item{\code{\link{ifelse_censor_linter}}}
@@ -28,6 +27,7 @@ The following linters are tagged with 'efficiency':
 \item{\code{\link{matrix_apply_linter}}}
 \item{\code{\link{nested_ifelse_linter}}}
 \item{\code{\link{nrow_subset_linter}}}
+\item{\code{\link{numerical_linter}}}
 \item{\code{\link{nzchar_linter}}}
 \item{\code{\link{outer_negation_linter}}}
 \item{\code{\link{redundant_equals_linter}}}
